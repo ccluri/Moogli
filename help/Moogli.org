@@ -8,7 +8,7 @@
 
 * Introduction
 
-  Moogli (a sister project of MOOSE) is a simulator independent openGL based
+  Moogli (a sister project of [[http://moose.ncbs.res.in][MOOSE]]) is a simulator independent openGL based
   visualization tool for neural simulations. Moogli can visualize morphology
   of single/multiple neurons or network of neurons, and can also
   visualize activity in these cells.
@@ -27,13 +27,13 @@
    6) mencoder
 
 ** Get Moogli
-   Download and untar Moogli from *site*
+   Download and untar Moogli from [[https://github.com/ccluri/Moogli][git repo]]
 
 ** Run Moogli
    In terminal, cd to location of untar-ed Moogli folder (/Moogli)
    >python moogli.py
    You will see an white screen with axes on the bottom left.
-
+   
 
 * Supported Formats
 
@@ -58,7 +58,7 @@
 
   Save as movie (.avi) for data visualization.
   [Users will be able to 'direct' their movies soon]
-
+  
 
 * Defaults
 
@@ -87,7 +87,7 @@
   Control + q : Quit
   Space       : Play/Pause Visualization
 
-
+  
 * Use Cases
 
 ** Inspect morphology of cell
@@ -228,8 +228,8 @@
 
   Upinder S. Bhalla, Subhasis Ray, Niraj Dudani, Aditya Gilra of NCBS for feedback and encouragment
   Developers of libQGLViewer and its python bindings by Frederic Boudon
-
+  
 
 * Contact
-
+  
   C Hanuma Chaitanya : chaitanyah[at]ncbs[dot]res[dot]in
