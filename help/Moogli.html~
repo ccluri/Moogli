@@ -1,0 +1,521 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+               "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>Moogli</title>
+<meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"/>
+<meta name="title" content="Moogli"/>
+<meta name="generator" content="Org-mode"/>
+<meta name="generated" content="2012-05-13 18:08:44 IST"/>
+<meta name="author" content="chaitanya"/>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  html { font-family: Times, serif; font-size: 12pt; }
+  .title  { text-align: center; }
+  .todo   { color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #add8e6; font-weight:normal }
+  .target { }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  {margin-left:auto; margin-right:0px;  text-align:right;}
+  .left   {margin-left:0px;  margin-right:auto; text-align:left;}
+  .center {margin-left:auto; margin-right:auto; text-align:center;}
+  p.verse { margin-left: 3% }
+  pre {
+	border: 1pt solid #AEBDCC;
+	background-color: #F3F5F7;
+	padding: 5pt;
+	font-family: courier, monospace;
+        font-size: 90%;
+        overflow:auto;
+  }
+  table { border-collapse: collapse; }
+  td, th { vertical-align: top;  }
+  th.right  { text-align:center;  }
+  th.left   { text-align:center;   }
+  th.center { text-align:center; }
+  td.right  { text-align:right;  }
+  td.left   { text-align:left;   }
+  td.center { text-align:center; }
+  dt { font-weight: bold; }
+  div.figure { padding: 0.5em; }
+  div.figure p { text-align: center; }
+  div.inlinetask {
+    padding:10px;
+    border:2px solid gray;
+    margin:10px;
+    background: #ffffcc;
+  }
+  textarea { overflow-x: auto; }
+  .linenr { font-size:smaller }
+  .code-highlighted {background-color:#ffff00;}
+  .org-info-js_info-navigation { border-style:none; }
+  #org-info-js_console-label { font-size:10px; font-weight:bold;
+                               white-space:nowrap; }
+  .org-info-js_search-highlight {background-color:#ffff00; color:#000000;
+                                 font-weight:bold; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+
+</head>
+<body>
+
+<div id="preamble">
+
+</div>
+
+<div id="content">
+<h1 class="title">Moogli</h1>
+
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1 Introduction</a></li>
+<li><a href="#sec-2">2 Installation</a>
+<ul>
+<li><a href="#sec-2-1">2.1 Additional Software</a></li>
+<li><a href="#sec-2-2">2.2 Get Moogli</a></li>
+<li><a href="#sec-2-3">2.3 Run Moogli</a></li>
+</ul>
+</li>
+<li><a href="#sec-3">3 Supported Formats</a>
+<ul>
+<li><a href="#sec-3-1">3.1 Input Formats</a></li>
+<li><a href="#sec-3-2">3.2 Save as formats</a></li>
+</ul>
+</li>
+<li><a href="#sec-4">4 Defaults</a></li>
+<li><a href="#sec-5">5 Use Cases</a>
+<ul>
+<li><a href="#sec-5-1">5.1 Inspect morphology of cell</a></li>
+<li><a href="#sec-5-2">5.2 Display multiple copies of same cell</a></li>
+<li><a href="#sec-5-3">5.3 Visualizing Parameters</a></li>
+</ul>
+</li>
+<li><a href="#sec-6">6 Additional Information</a>
+<ul>
+<li><a href="#sec-6-1">6.1 New Color Maps</a></li>
+<li><a href="#sec-6-2">6.2 HDF5</a></li>
+</ul>
+</li>
+<li><a href="#sec-7">7 Known Issues</a></li>
+<li><a href="#sec-8">8 FAQ</a></li>
+<li><a href="#sec-9">9 License</a></li>
+<li><a href="#sec-10">10 Acknowledgements</a></li>
+<li><a href="#sec-11">11 Contact</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-1" class="outline-3">
+<h3 id="sec-1"><span class="section-number-3">1</span> Introduction</h3>
+<div class="outline-text-3" id="text-1">
+
+
+<p> 
+   Moogli (a sister project of MOOSE) is a simulator independent openGL based
+   visualization tool for neural simulations. Moogli can visualize morphology
+   of single/multiple neurons or network of neurons, and can also
+   visualize activity in these cells.
+</p>
+<p>
+   Moogli is like a VLC player for neural simulations. 
+</p>
+<p>
+   There is also the case of visualizing large network of neurons(1000's) In
+   which case, the morphology of individual cell is ignored, and each neuron
+   is represented as spheres/disks which are placed according to a graphviz
+   like algorithm depending on connectivity.
+</p>
+<p>
+   In this case, the data may be only spike timing data. But the tree
+   structure of the previous case is still adhered and the connectivity
+   between compartments is stored as text arrays inside hdf5 file itself.
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-2" class="outline-3">
+<h3 id="sec-2"><span class="section-number-3">2</span> Installation</h3>
+<div class="outline-text-3" id="text-2">
+
+
+
+</div>
+
+<div id="outline-container-2-1" class="outline-4">
+<h4 id="sec-2-1"><span class="section-number-4">2.1</span> Additional Software</h4>
+<div class="outline-text-4" id="text-2-1">
+
+<ol>
+<li>python2.6/2.7 
+</li>
+<li>PyQt4
+</li>
+<li>hdf5 
+</li>
+<li><a href="https://gforge.inria.fr/frs/?group_id=773">PyQGLViewer0.10</a>
+</li>
+<li>matplotlib
+</li>
+<li>mencoder 
+</li>
+</ol>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-2-2" class="outline-4">
+<h4 id="sec-2-2"><span class="section-number-4">2.2</span> Get Moogli</h4>
+<div class="outline-text-4" id="text-2-2">
+
+<p>    Download and untar Moogli from <b>site</b>
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-2-3" class="outline-4">
+<h4 id="sec-2-3"><span class="section-number-4">2.3</span> Run Moogli</h4>
+<div class="outline-text-4" id="text-2-3">
+
+<p>    In terminal, cd to location of untar-ed Moogli folder (/Moogli)
+    &gt;python moogli.py
+    You will see an white screen with axes on the bottom left. 
+</p>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-3" class="outline-3">
+<h3 id="sec-3"><span class="section-number-3">3</span> Supported Formats</h3>
+<div class="outline-text-3" id="text-3">
+
+
+<p>
+   <img src="./images/supportedFormats.png" width=60% alt="./images/supportedFormats.png" />
+</p>
+
+</div>
+
+<div id="outline-container-3-1" class="outline-4">
+<h4 id="sec-3-1"><span class="section-number-4">3.1</span> Input Formats</h4>
+<div class="outline-text-4" id="text-3-1">
+
+
+<p>   
+   Currently .xml (MorphML/NeuroML), .csv for visualizaing morphology of cells 
+   The .p file format is in development
+</p>
+<p>
+   The format currently employed for data visualization is <a href="#sec-6">hdf5</a>. The file
+   structure  includes morphology of the cell(s) being visualized. Currently
+   support Morphml (.xml) Neuroml(.xml) and .csv
+</p>
+<p>
+   In future: Employ a standard format for data visualization. 
+   Also plans to include electrophys file formats.
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-3-2" class="outline-4">
+<h4 id="sec-3-2"><span class="section-number-4">3.2</span> Save as formats</h4>
+<div class="outline-text-4" id="text-3-2">
+
+
+<p>
+   Save screenshot (.png) of the current display.
+</p>
+<p>   
+   Save as movie (.avi) for data visualization. 
+   [Users will be able to 'direct' their movies soon] 
+</p>
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-4" class="outline-3">
+<h3 id="sec-4"><span class="section-number-3">4</span> Defaults</h3>
+<div class="outline-text-3" id="text-4">
+
+
+<p>
+   Refer to /Moogli/defaults.py file (the file is self explanatory via comments) 
+</p>
+<ol>
+<li>Background color of the scene.  
+</li>
+<li>To draw the cells using default settings. 
+</li>
+<li>To visualize the cells using default settings.
+</li>
+<li>To use default binning properties.   
+</li>
+<li>Speed of visualization updation.
+</li>
+<li>FPS/height/width when saving as .avi
+</li>
+</ol>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-5" class="outline-3">
+<h3 id="sec-5"><span class="section-number-3">5</span> Use Cases</h3>
+<div class="outline-text-3" id="text-5">
+
+
+
+</div>
+
+<div id="outline-container-5-1" class="outline-4">
+<h4 id="sec-5-1"><span class="section-number-4">5.1</span> Inspect morphology of cell</h4>
+<div class="outline-text-4" id="text-5-1">
+
+
+<p>
+    File&gt;Open&gt; (/Moogli/samples/mitralCell.xml)
+</p>
+<p>
+    <img src="./images/mitralCell1.png" width=60% alt="./images/mitralCell1.png" />
+</p>
+<p>
+    Above prompt is only seen when <a href="#sec-4">DEFAULT DRAW</a> is False 
+</p>
+<p>
+    Selecting to draw all compartments (Button labeled 'A') as cylinders and click 'OK'
+</p>
+<p>
+    alternatively, if not sure
+</p>
+<p>
+    Click 'Use Defaults' 
+</p>
+<p>
+    Result:
+</p>
+<p>
+    <img src="./images/mitralCell2.png" width=60% alt="./images/mitralCell2.png" />
+</p>
+<p>
+    Try displaying some of the compartments in a cell as cylinders and others as capsules. 
+</p>
+
+</div>
+
+</div>
+
+<div id="outline-container-5-2" class="outline-4">
+<h4 id="sec-5-2"><span class="section-number-4">5.2</span> Display multiple copies of same cell</h4>
+<div class="outline-text-4" id="text-5-2">
+
+
+<p>
+    File&gt;Open&gt; (/Moogli/samples/cablesIncludedExtended.csv)
+</p>
+
+<p>
+    Result:
+    <img src="./images/stylesOffsetPosition.png" width=60% alt="./images/stylesOffsetPosition.png" />
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-5-3" class="outline-4">
+<h4 id="sec-5-3"><span class="section-number-4">5.3</span> Visualizing Parameters</h4>
+<div class="outline-text-4" id="text-5-3">
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-6" class="outline-3">
+<h3 id="sec-6"><span class="section-number-3">6</span> Additional Information</h3>
+<div class="outline-text-3" id="text-6">
+
+
+
+</div>
+
+<div id="outline-container-6-1" class="outline-4">
+<h4 id="sec-6-1"><span class="section-number-4">6.1</span> New Color Maps</h4>
+<div class="outline-text-4" id="text-6-1">
+
+
+<p>
+    If one needs to add other colormaps to the existing, generate a list of color values (rgb) 
+    scaled to 1 (ie 0 to 255 = 0 to 1) and pickle this list. Ensure no name conflics when naming 
+    the file. Now add this pickled file in the /Moogli/openGLHeaders/colormaps folder.
+    In addition use the script /Moogli/icons/makeColorMap.py to generate an icon for the colormap.
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-6-2" class="outline-4">
+<h4 id="sec-6-2"><span class="section-number-4">6.2</span> HDF5</h4>
+<div class="outline-text-4" id="text-6-2">
+
+
+<p>    
+    <img src="./images/hdfFileFormat.png" width=60% alt="./images/hdfFileFormat.png" />
+</p>
+<p>
+    For single/multiple neurons, the data itself is stored in arrays,
+    following a strict tree structure. For example,
+    filename.h5&gt;cellName&gt;compartmenName&gt;propertyName corresponds to the array
+    of values of that property (can be membrane potential / Ca concentration
+    etc) over time. This is because, it gives an easy intuitive handle to the
+    data.
+</p>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-7" class="outline-3">
+<h3 id="sec-7"><span class="section-number-3">7</span> Known Issues</h3>
+<div class="outline-text-3" id="text-7">
+
+
+<ol>
+<li>Drawing of cylinders/capsules at some times, would show up as discontinous elements.
+      Issue: Drawing of cylinders in OpenGL has an issue ref. /Moogli/openGLHeaders/objects.py
+      Current fix: Draw as Ball&amp;Sticks instead
+</li>
+</ol>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-8" class="outline-3">
+<h3 id="sec-8"><span class="section-number-3">8</span> FAQ</h3>
+<div class="outline-text-3" id="text-8">
+
+
+<p>
+   Q. Would Moogli support <b>some</b> specific file format?
+   A. The idea is to have as many supported formats as possible. Eventually that is.  
+</p>
+<p>
+   Q. I was able to see the cell initially, I zoomed out/in, now I do not see the cell!
+   A. In the /Moogli folder look for ".MoogliState.xml" file and delete it.
+</p>
+<p>
+   More later &hellip;
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-9" class="outline-3">
+<h3 id="sec-9"><span class="section-number-3">9</span> License</h3>
+<div class="outline-text-3" id="text-9">
+
+
+<p>
+   <a href="http://www.gnu.org/licenses/gpl.html">GNU GPL (3 or later)</a>
+</p>
+<p>
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License as
+   published by the Free Software Foundation; either version 3, or
+   (at your option) any later version.
+</p>
+<p>
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   General Public License for more details.
+</p>
+<p>
+   You should have received a copy of the GNU General Public License
+   along with this program; see the file COPYING.  If not, write to
+   the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+   Floor, Boston, MA 02110-1301, USA.
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-10" class="outline-3">
+<h3 id="sec-10"><span class="section-number-3">10</span> Acknowledgements</h3>
+<div class="outline-text-3" id="text-10">
+
+
+<p>   
+   Upinder S. Bhalla, Subhasis Ray, Niraj Dudani, Aditya Gilra of NCBS for feedback and encouragment  
+   Developers of libQGLViewer and its python bindings by Frederic Boudon
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-11" class="outline-3">
+<h3 id="sec-11"><span class="section-number-3">11</span> Contact</h3>
+<div class="outline-text-3" id="text-11">
+
+<p>   C Hanuma Chaitanya : chaitanyah@ncbs.res.in
+</p>
+
+
+
+
+</div>
+</div>
+</div>
+
+<div id="postamble">
+<p class="date">Date: 2012-05-13 18:08:44 IST</p>
+<p class="author">Author: chaitanya</p>
+<p class="creator">Org version 7.8.02 with Emacs version 23</p>
+<a href="http://validator.w3.org/check?uri=referer">Validate XHTML 1.0</a>
+
+</div>
+</body>
+</html>
