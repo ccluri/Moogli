@@ -7,7 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"/>
 <meta name="title" content="Moogli"/>
 <meta name="generator" content="Org-mode"/>
-<meta name="generated" content="2012-05-14 13:52:40 IST"/>
+<meta name="generated" content="2012-05-15 13:32:41 IST"/>
 <meta name="author" content="chaitanya"/>
 <meta name="description" content=""/>
 <meta name="keywords" content=""/>
@@ -94,8 +94,12 @@
 <div id="content">
 <h1 class="title">Moogli</h1>
 
-<p><img src="./static/images/introPic.png" width=60% alt="./static/images/introPic.png" />
+
+<div style="text-align: center">
+<p><img src="./static/images/introPic.png" width=80% alt="./static/images/introPic.png" />
 </p>
+</div>
+
 
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
@@ -142,7 +146,8 @@
 <li><a href="#sec-10">FAQ</a></li>
 <li><a href="#sec-11">License</a></li>
 <li><a href="#sec-12">Acknowledgements</a></li>
-<li><a href="#sec-13">Contact</a></li>
+<li><a href="#sec-13">Collaborate</a></li>
+<li><a href="#sec-14">Contact</a></li>
 </ul>
 </div>
 </div>
@@ -159,7 +164,7 @@
   visualize activity in these cells.
 </p>
 <p>
-  Moogli is like a VLC player for neural simulations.
+  Moogli is like VLC player for neural simulations.
 </p>
 
 </div>
@@ -185,13 +190,25 @@
 </li>
 <li>hdf5
 </li>
-<li><a href="https://gforge.inria.fr/frs/?group_id=773">PyQGLViewer0.10</a>
+<li>matplotlib   
 </li>
-<li>matplotlib
+<li>mencoder   
 </li>
-<li>mencoder
+<li><a href="https://gforge.inria.fr/frs/?group_id=773">libQGLViewer-2.3.15-py</a> &amp; install instructions <a href="http://www.libqglviewer.com//installUnix.html#linux">here</a>
 </li>
+<li><a href="https://gforge.inria.fr/frs/?group_id=773">PyQGLViewer0.10</a> (first install libQGLViewer-2.3.15-py) and untar contents
+
+<p>
+      cd / PyQGLViewer0.10 
+      <br \>
+      &gt;python setup.py build   # to compile
+      <br \>
+      &gt;python setup.py install # to install on your system
+      <br \>
+      &gt;python setup.py bdist   # to create a binary distribution
+</p></li>
 </ol>
+
 
 
 </div>
@@ -202,7 +219,9 @@
 <h3 id="sec-2-2">Get Moogli</h3>
 <div class="outline-text-3" id="text-2-2">
 
-<p>   Download and untar Moogli from <a href="https://github.com/ccluri/Moogli">git repo</a>
+
+<p>
+   Download and unzip Moogli from <a href="https://github.com/ccluri/Moogli">git repo</a>
 </p>
 </div>
 
@@ -212,11 +231,16 @@
 <h3 id="sec-2-3">Run Moogli</h3>
 <div class="outline-text-3" id="text-2-3">
 
-<p>   In terminal, cd to location of untar-ed Moogli folder (/Moogli)
+
+<p>
+   In terminal, cd to location of unzipped Moogli folder (/Moogli)
+</p>
+<p>
    &gt;python moogli.py
+</p>
+<p>
    You will see an white screen with axes on the bottom left.
 </p>
-
 </div>
 </div>
 
@@ -227,9 +251,12 @@
 <div class="outline-text-2" id="text-3">
 
 
-<p>
-  <img src="./static/images/supportedFormats.png" width=60% alt="./static/images/supportedFormats.png" />
+
+<div style="text-align: center">
+<p><img src="./static/images/supportedFormats.png" width=80% alt="./static/images/supportedFormats.png" />
 </p>
+</div>
+
 
 </div>
 
@@ -248,7 +275,7 @@
   support Morphml (.xml) Neuroml(.xml) and .csv
 </p>
 <p>
-  In future: Employ a standard format for data visualization.
+  <a href="#sec-7">In future</a>: Employ a standard format for data visualization.
   Also plans to include electrophys file formats.
 </p>
 </div>
@@ -267,7 +294,6 @@
   Save as movie (.avi) for data visualization.
   [Users will be able to 'direct' their movies soon]
 </p>
-
 </div>
 </div>
 
@@ -297,7 +323,6 @@
 </ol>
 
 
-
 </div>
 
 </div>
@@ -308,21 +333,34 @@
 
 
 <p>
-  Keyboard: (User can bring this up by hitting 'h' key)
-  <img src="./static/images/keyBoardShortcuts.png"  alt="./static/images/keyBoardShortcuts.png" />
+  Keyboard - User can bring this up by hitting 'H' key
 </p>
+
+<div style="text-align: center">
+<p><img src="./static/images/keyBoardShortcuts.png" width=60% alt="./static/images/keyBoardShortcuts.png" />
+</p>
+</div>
+
 <p>
-  Mouse: (User can bring this up by hitting 'h' key)
-  <img src="./static/images/mouseShortcuts.png"  alt="./static/images/mouseShortcuts.png" />
+  Mouse - User can bring this up by hitting 'H' key
 </p>
+
+<div style="text-align: center">
+<p><img src="./static/images/mouseShortcuts.png" width=60% alt="./static/images/mouseShortcuts.png" />
+</p>
+</div>
+
 <p>
   Additionally:
 </p>
 <p>
-  Control + o : Open File
-  Control + s : Save As
-  Control + q : Quit
-  Space       : Play/Pause Visualization
+  Control + O : Open File
+  <br \>  
+  Control + S : Save As
+  <br \>  
+  Control + Q : Quit
+  <br \>  
+  Spacebar    : Play/Pause Visualization
 </p>
 
 </div>
@@ -345,9 +383,12 @@
 <p>
    File&gt;Open&gt; (/Moogli/samples/mitralCell.xml)
 </p>
-<p>
-   <img src="./static/images/mitralCell1.png" width=60% alt="./static/images/mitralCell1.png" />
+
+<div style="text-align: center">
+<p><img src="./static/images/mitralCell1.png" width=80% alt="./static/images/mitralCell1.png" />
 </p>
+</div>
+
 <p>
    Above prompt is only seen when <a href="#sec-4">DEFAULT DRAW</a> is False
 </p>
@@ -363,9 +404,12 @@
 <p>
    Result:
 </p>
-<p>
-   <img src="./static/images/mitralCell2.png" width=60% alt="./static/images/mitralCell2.png" />
+
+<div style="text-align: center">
+<p><img src="./static/images/mitralCell2.png" width=80% alt="./static/images/mitralCell2.png" />
 </p>
+</div>
+
 <p>
    Try displaying some of the compartments in a cell as cylinders and others as capsules.
 </p>
@@ -382,11 +426,17 @@
 <p>
    File&gt;Open&gt; (/Moogli/samples/cablesIncludedExtended.csv)
 </p>
-
+<p>
+   Accomplished by giving an offset position in the style selection prompt
+</p>
 <p>
    Result:
-   <img src="./static/images/stylesOffsetPosition.png" width=60% alt="./static/images/stylesOffsetPosition.png" />
 </p>
+
+<div style="text-align: center">
+<p><img src="./static/images/stylesOffsetPosition.png" width=80% alt="./static/images/stylesOffsetPosition.png" />
+</p>
+</div>
 
 </div>
 
@@ -397,18 +447,26 @@
 <div class="outline-text-3" id="text-6-3">
 
 
-
-
 <p>
    File&gt;Open&gt; (/Moogli/samples/mitral.h5)
 </p>
 <p>
-   The hdf5 file has the data only for 3 compartments. Moogli can handle partial data.
+   The hdf5 file has the data only for 3 compartments. Moogli can handle partial data. Here showing
+   default visualization.
 </p>
 <p>
    Result:
-   <img src="./static/images/mitral_h5.png" width=60% alt="./static/images/mitral_h5.png" />
 </p>
+
+<div style="text-align: center">
+<p><img src="./static/images/mitral_h5.png" width=80% alt="./static/images/mitral_h5.png" />
+</p>
+</div>
+
+<p>
+   More later &hellip;
+</p>
+
 </div>
 </div>
 
@@ -426,7 +484,9 @@
 <h3 id="sec-7-1">Network Level</h3>
 <div class="outline-text-3" id="text-7-1">
 
-<p>   There is also the case of visualizing large network of neurons(1000's) In
+
+<p>
+   There is also the case of visualizing large network of neurons(1000's) In
    which case, the morphology of individual cell is ignored, and each neuron
    is represented as spheres/disks which are placed according to a graphviz
    like algorithm depending on connectivity. (Also support for NetworkML)
@@ -436,7 +496,6 @@
    structure of the previous case is still adhered and the connectivity
    between compartments is stored as text arrays inside hdf5 file itself.
 </p>
-
 </div>
 
 </div>
@@ -445,14 +504,15 @@
 <h3 id="sec-7-2">Formats</h3>
 <div class="outline-text-3" id="text-7-2">
 
-<p>   Employ a standard format for data, HDF5 format ( NeuroHDF? )
+
+<p>
+   Employ a standard format for data, HDF5 format ( NeuroHDF? )
    Support additionally Electrophys file formats ( neo? )
    Support .p file formats
 </p>
 <p>
    Direction of movie output - cleaner ways to do it - a possible demo?
 </p>
-
 </div>
 
 </div>
@@ -461,9 +521,10 @@
 <h3 id="sec-7-3">Examples</h3>
 <div class="outline-text-3" id="text-7-3">
 
-<p>   More examples /use cases for documentation
-</p>
 
+<p>
+   More examples /use cases for documentation
+</p>
 </div>
 
 </div>
@@ -472,9 +533,10 @@
 <h3 id="sec-7-4">Packaging</h3>
 <div class="outline-text-3" id="text-7-4">
 
-<p>   Easy to install packaging. Specific to each OS.
-</p>
 
+<p>
+   Easy to install packaging. Specific to each OS.
+</p>
 </div>
 </div>
 
@@ -508,18 +570,24 @@
 <div class="outline-text-3" id="text-8-2">
 
 
-<p>
-   <img src="./static/images/hdfFileFormat.png" width=60% alt="./static/images/hdfFileFormat.png" />
+
+<div style="text-align: center">
+<p><img src="./static/images/hdfFileFormat.png" width=80% alt="./static/images/hdfFileFormat.png" />
 </p>
+</div>
+
 <p>
    For single/multiple neurons, the data itself is stored in arrays,
    following a strict tree structure. For example,
-   filename.h5&gt;cellName&gt;compartmenName&gt;propertyName corresponds to the array
-   of values of that property (can be membrane potential / Ca concentration
+</p>
+<p>
+   filename.h5&gt;cellName&gt;compartmenName&gt;propertyName
+</p>
+<p> 
+   corresponds to the arrayof values of that property (can be membrane potential / Ca concentration
    etc) over time. This is because, it gives an easy intuitive handle to the
    data.
 </p>
-
 </div>
 </div>
 
@@ -532,7 +600,9 @@
 
 <ol>
 <li>Drawing of cylinders/capsules at some times, would show up as discontinous elements.
-     Issue: Drawing of cylinders in OpenGL has an issue ref. /Moogli/openGLHeaders/objects.py
+     <br \>  
+     Issue: Drawing of cylinders in OpenGL has an issue Ref: /Moogli/openGLHeaders/objects.py
+     <br \>    
      Current fix: Draw as Ball&amp;Sticks instead
 </li>
 </ol>
@@ -550,11 +620,14 @@
 
 <p>
   Q. Would Moogli support <b>some</b> specific file format?
+  <br \>  
   A. The idea is to have as many supported formats as possible. Eventually that is.
 </p>
 <p>
   Q. I was able to see the cell initially, I zoomed out/in, now I do not see the cell!
-  A. In the /Moogli folder look for ".MoogliState.xml" file and delete it.
+  <br \>    
+  A. In the /Moogli folder look for ".MoogliState.xml" file and delete it. This arises because
+  of no limitation on zooming.
 </p>
 <p>
   More later &hellip;
@@ -601,27 +674,41 @@
 
 
 <p>
-  Upinder S. Bhalla, Subhasis Ray, Niraj Dudani, Aditya Gilra of NCBS for feedback and encouragment
-  Developers of libQGLViewer and its python bindings by Frederic Boudon
+  Upinder S. Bhalla, Subhasis Ray, Niraj Dudani, Aditya Gilra of NCBS for feedback and encouragment.
+  <br \>  
+  Developers of libQGLViewer and its python bindings by Frederic Boudon.
 </p>
-
 </div>
 
 </div>
 
 <div id="outline-container-13" class="outline-2">
-<h2 id="sec-13">Contact</h2>
+<h2 id="sec-13">Collaborate</h2>
 <div class="outline-text-2" id="text-13">
 
 
+<p>  
+  We welcome you to collaborate on this project. Please send us your details, and how you can contribute. 
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-14" class="outline-2">
+<h2 id="sec-14">Contact</h2>
+<div class="outline-text-2" id="text-14">
+
+
 <p>
+  Upinder S. Bhalla : bhalla[at]ncbs[dot]res[dot]in
+  <br \>  
   C Hanuma Chaitanya : chaitanyah[at]ncbs[dot]res[dot]in
 </p></div>
 </div>
 </div>
 
 <div id="postamble">
-<p class="date">Date: 2012-05-14 13:52:40 IST</p>
+<p class="date">Date: 2012-05-15 13:32:41 IST</p>
 <p class="creator">Org version 7.8.02 with Emacs version 23</p>
 <a href="http://validator.w3.org/check?uri=referer">Validate XHTML 1.0</a>
 

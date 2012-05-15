@@ -3,9 +3,10 @@
 #+STYLE:  <link rel="stylesheet" type="text/css" href="./static/base.css" />
 #+STARTUP: oddeven
 
-#+ATTR_HTML: width=60%
+#+ATTR_HTML: width=80%
+#+BEGIN_CENTER
 [[./static/images/introPic.png]]
-
+#+END_CENTER
 * Introduction
 
   Moogli (a sister project of [[http://moose.ncbs.res.in][MOOSE]]) is a simulator independent openGL based
@@ -13,7 +14,7 @@
   of single/multiple neurons or network of neurons, and can also
   visualize activity in these cells.
 
-  Moogli is like a VLC player for neural simulations.
+  Moogli is like VLC player for neural simulations.
 
 
 * Installation
@@ -22,23 +23,38 @@
    1) python2.6/2.7
    2) PyQt4
    3) hdf5
-   4) [[https://gforge.inria.fr/frs/?group_id=773][PyQGLViewer0.10]]
-   5) matplotlib
-   6) mencoder
+   4) matplotlib   
+   5) mencoder   
+   6) [[https://gforge.inria.fr/frs/?group_id=773][libQGLViewer-2.3.15-py]] & install instructions [[http://www.libqglviewer.com//installUnix.html#linux][here]]
+   7) [[https://gforge.inria.fr/frs/?group_id=773][PyQGLViewer0.10]] (first install libQGLViewer-2.3.15-py) and untar contents
+
+      cd / PyQGLViewer0.10 
+      #+HTML: <br \>
+      >python setup.py build   # to compile
+      #+HTML: <br \>
+      >python setup.py install # to install on your system
+      #+HTML: <br \>
+      >python setup.py bdist   # to create a binary distribution
+
 
 ** Get Moogli
-   Download and untar Moogli from [[https://github.com/ccluri/Moogli][git repo]]
 
+   Download and unzip Moogli from [[https://github.com/ccluri/Moogli][git repo]]
+   
 ** Run Moogli
-   In terminal, cd to location of untar-ed Moogli folder (/Moogli)
+
+   In terminal, cd to location of unzipped Moogli folder (/Moogli)
+
    >python moogli.py
+
    You will see an white screen with axes on the bottom left.
    
-
 * Supported Formats
 
-   #+ATTR_HTML: width=60%
+   #+ATTR_HTML: width=80%
+   #+BEGIN_CENTER
   [[./static/images/supportedFormats.png]]
+   #+END_CENTER
 
 ** Input Formats
 
@@ -49,7 +65,7 @@
   structure  includes morphology of the cell(s) being visualized. Currently
   support Morphml (.xml) Neuroml(.xml) and .csv
 
-  In future: Employ a standard format for data visualization.
+  [[TO DO][In future]]: Employ a standard format for data visualization.
   Also plans to include electrophys file formats.
 
 ** Save as formats
@@ -59,7 +75,6 @@
   Save as movie (.avi) for data visualization.
   [Users will be able to 'direct' their movies soon]
   
-
 * Defaults
 
   Refer to /Moogli/defaults.py file (the file is self explanatory via comments)
@@ -71,21 +86,31 @@
   5) Speed of visualization updation.
   6) FPS/height/width when saving as .avi
 
-
 * Keyboard & Mouse shortcuts
 
-  Keyboard: (User can bring this up by hitting 'h' key)
-  [[./static/images/keyBoardShortcuts.png]]
+  Keyboard - User can bring this up by hitting 'H' key
 
-  Mouse: (User can bring this up by hitting 'h' key)
+  #+ATTR_HTML: width=60%
+  #+BEGIN_CENTER
+  [[./static/images/keyBoardShortcuts.png]]
+  #+END_CENTER
+
+  Mouse - User can bring this up by hitting 'H' key
+  
+  #+ATTR_HTML: width=60%
+  #+BEGIN_CENTER
   [[./static/images/mouseShortcuts.png]]
+  #+END_CENTER
 
   Additionally:
 
-  Control + o : Open File
-  Control + s : Save As
-  Control + q : Quit
-  Space       : Play/Pause Visualization
+  Control + O : Open File
+  #+HTML: <br \>  
+  Control + S : Save As
+  #+HTML: <br \>  
+  Control + Q : Quit
+  #+HTML: <br \>  
+  Spacebar    : Play/Pause Visualization
 
   
 * Use Cases
@@ -94,8 +119,10 @@
 
    File>Open> (/Moogli/samples/mitralCell.xml)
 
-   #+ATTR_HTML: width=60%
+   #+ATTR_HTML: width=80%
+   #+BEGIN_CENTER 
    [[./static/images/mitralCell1.png]]
+   #+END_CENTER 
 
    Above prompt is only seen when [[Defaults][DEFAULT DRAW]] is False
 
@@ -107,8 +134,10 @@
 
    Result:
 
-   #+ATTR_HTML: width=60%
+   #+ATTR_HTML: width=80%
+   #+BEGIN_CENTER
    [[./static/images/mitralCell2.png]]
+   #+END_CENTER
 
    Try displaying some of the compartments in a cell as cylinders and others as capsules.
 
@@ -117,27 +146,36 @@
 
    File>Open> (/Moogli/samples/cablesIncludedExtended.csv)
 
+   Accomplished by giving an offset position in the style selection prompt
 
    Result:
-   #+ATTR_HTML: width=60%
-   [[./static/images/stylesOffsetPosition.png]]
 
+   #+ATTR_HTML: width=80%
+   #+BEGIN_CENTER
+   [[./static/images/stylesOffsetPosition.png]]
+   #+END_CENTER
 
 ** Visualizing Parameters
 
-
-
    File>Open> (/Moogli/samples/mitral.h5)
 
-   The hdf5 file has the data only for 3 compartments. Moogli can handle partial data.
+   The hdf5 file has the data only for 3 compartments. Moogli can handle partial data. Here showing
+   default visualization.
 
    Result:
-   #+ATTR_HTML: width=60%
+
+   #+ATTR_HTML: width=80%
+   #+BEGIN_CENTER
    [[./static/images/mitral_h5.png]]
+   #+END_CENTER
+
+   More later ...
+
 
 * TO DO
 
 ** Network Level
+
    There is also the case of visualizing large network of neurons(1000's) In
    which case, the morphology of individual cell is ignored, and each neuron
    is represented as spheres/disks which are placed according to a graphviz
@@ -147,22 +185,21 @@
    structure of the previous case is still adhered and the connectivity
    between compartments is stored as text arrays inside hdf5 file itself.
 
-
 ** Formats
+
    Employ a standard format for data, HDF5 format ( NeuroHDF? )
    Support additionally Electrophys file formats ( neo? )
    Support .p file formats
 
    Direction of movie output - cleaner ways to do it - a possible demo?
 
-
 ** Examples
+
    More examples /use cases for documentation
 
-
 ** Packaging
-   Easy to install packaging. Specific to each OS.
 
+   Easy to install packaging. Specific to each OS.
 
 * Additional Information
 
@@ -175,31 +212,39 @@
 
 ** HDF5
 
-   #+ATTR_HTML: width=60%
+   #+ATTR_HTML: width=80%
+   #+BEGIN_CENTER
    [[./static/images/hdfFileFormat.png]]
+   #+END_CENTER
 
    For single/multiple neurons, the data itself is stored in arrays,
    following a strict tree structure. For example,
-   filename.h5>cellName>compartmenName>propertyName corresponds to the array
-   of values of that property (can be membrane potential / Ca concentration
+
+   filename.h5>cellName>compartmenName>propertyName
+ 
+   corresponds to the arrayof values of that property (can be membrane potential / Ca concentration
    etc) over time. This is because, it gives an easy intuitive handle to the
    data.
-
 
 * Known Issues
 
   1) Drawing of cylinders/capsules at some times, would show up as discontinous elements.
-     Issue: Drawing of cylinders in OpenGL has an issue ref. /Moogli/openGLHeaders/objects.py
+     #+HTML: <br \>  
+     Issue: Drawing of cylinders in OpenGL has an issue Ref: /Moogli/openGLHeaders/objects.py
+     #+HTML: <br \>    
      Current fix: Draw as Ball&Sticks instead
 
 
 * FAQ
 
   Q. Would Moogli support *some* specific file format?
+  #+HTML: <br \>  
   A. The idea is to have as many supported formats as possible. Eventually that is.
 
   Q. I was able to see the cell initially, I zoomed out/in, now I do not see the cell!
-  A. In the /Moogli folder look for ".MoogliState.xml" file and delete it.
+  #+HTML: <br \>    
+  A. In the /Moogli folder look for ".MoogliState.xml" file and delete it. This arises because
+  of no limitation on zooming.
 
   More later ...
 
@@ -226,10 +271,16 @@
 
 * Acknowledgements
 
-  Upinder S. Bhalla, Subhasis Ray, Niraj Dudani, Aditya Gilra of NCBS for feedback and encouragment
-  Developers of libQGLViewer and its python bindings by Frederic Boudon
+  Upinder S. Bhalla, Subhasis Ray, Niraj Dudani, Aditya Gilra of NCBS for feedback and encouragment.
+  #+HTML: <br \>  
+  Developers of libQGLViewer and its python bindings by Frederic Boudon.
+
+* Collaborate  
   
+  We welcome you to collaborate on this project. Please send us your details, and how you can contribute. 
 
 * Contact
-  
+
+  Upinder S. Bhalla : bhalla[at]ncbs[dot]res[dot]in
+  #+HTML: <br \>  
   C Hanuma Chaitanya : chaitanyah[at]ncbs[dot]res[dot]in
