@@ -7,5 +7,7 @@
 
    For details regarding installation and usage see 'help' folder 
 
+   Homepage: http://moose.ncbs.res.in/moogli
+
    This software is available under [[http://www.gnu.org/licenses/gpl.html][GNU GPL (3 or later)]]
 
