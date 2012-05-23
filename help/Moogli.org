@@ -64,6 +64,8 @@
   The format currently employed for data visualization is [[Additional Information][hdf5]]. The file
   structure  includes morphology of the cell(s) being visualized. Currently
   support Morphml (.xml) Neuroml(.xml) and .csv
+  
+  Moogli now also supports .csv for data visualization. See /samples/timeSeries.csv for example
 
   [[TO DO][In future]]: Employ a standard format for data visualization.
   Also plans to include electrophys file formats.
