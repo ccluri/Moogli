@@ -28,7 +28,9 @@ class DesignerMainWindow(QtGui.QMainWindow,Ui_MainWindow):
         self.assignIcons()
         self.fileExtensionMap = {'neuroML(*.xml *.nml)':'XML','csv(*.csv)':'CSV','HDF5(*.h5 *.hdf5)':'HDF5','All Supported(*.h5 *hdf5 *.xml *.nml *.csv)':'All'}
 	self.sizeScale = DEFAULT_SIZE_SCALE #this should do into the canvas.py instead        
-	#self.fileBasedAction([PATH_SAMPLES + '/mitralCell.xml'])
+        self.fileType = None
+	self.fileBasedAction([PATH_SAMPLES + '/timeSeries.csv'])
+#        self.fileBasedAction([PATH_SAMPLES + '/mitral.h5'])
 
     def assignIcons(self):
         self.playButton.setIcon(QtGui.QIcon(os.path.join(PATH_ICONS,'play.png')))
@@ -40,6 +42,11 @@ class DesignerMainWindow(QtGui.QMainWindow,Ui_MainWindow):
     def clearCanvas(self):
         self.canvas.clearCanvas()
         self.canvas.updateGL()
+        self.fileType = None
+        self.dataFile = None
+        self.possibleData = False
+        self.hasData = False
+        self.frameData = {}
         print 'Clearing Canvas'
 
     def connectActions(self):
@@ -86,15 +93,17 @@ class DesignerMainWindow(QtGui.QMainWindow,Ui_MainWindow):
         self.hasData = False
 
         for name in fileNames:
-            fileType = str(name).rsplit('.',1)[1]
+            self.fileType = str(name).rsplit('.',1)[1]
             fileName = str(name)
-        print 'Opening File: ',fileName, 'Of Type', fileType
+        print 'Opening File: ',fileName, 'Of Type', self.fileType
         self.parsedList = []
-        if (fileType == 'xml') or (fileType =='nml'):
+
+        if (self.fileType == 'xml') or (self.fileType =='nml'):
             from imports.MorphML import MorphML
             mml = MorphML()
             self.parsedList = mml.readMorphMLFromFile(fileName)
-        elif (fileType == 'csv'):
+
+        elif (self.fileType == 'csv'):
             f = open(fileName,'r')
             testLine = f.readline()
             dialect = csv.Sniffer().sniff(testLine) #to get the format of the csv
@@ -103,9 +112,17 @@ class DesignerMainWindow(QtGui.QMainWindow,Ui_MainWindow):
             reader = csv.reader(f,dialect)
             for row in reader:
                 self.parsedList.append([row[0],row[1],[float(i)*1e-6 for i in row[2:9]]])
+                try:
+                    dummy = row[9] #vm expect text
+                    self.possibleData = True
+                    self.generateDataFile(row)
+                except IndexError:
+                    pass
             f.close()
+           
         #elif (fileType == 'p'):
-        elif (fileType == 'h5') or (fileType == 'hdf5'):
+        elif (self.fileType == 'h5') or (self.fileType == 'hdf5'):
+            self.fileType = 'h5'
             self.dataFile = h5py.File(fileName)
             self.possibleData = True
             for name in self.dataFile.keys():
@@ -113,7 +130,7 @@ class DesignerMainWindow(QtGui.QMainWindow,Ui_MainWindow):
                     from imports.MorphML import MorphML
                     mml = MorphML()
                     self.parsedList = mml.readMorphMLFromString(str(self.dataFile[name].value[0]))
-                elif (fileType == 'csv'):
+                elif (name.find('.csv') != -1):
                     f = open(fileName,'r')
                     testLine = f.readline()
                     dialect = csv.Sniffer().sniff(testLine) #to get the format of the csv
@@ -132,7 +149,14 @@ class DesignerMainWindow(QtGui.QMainWindow,Ui_MainWindow):
         else:
             self.selectCompartmentsToDraw()
 
+    def generateDataFile(self,row):
+        try:
+            self.dataFile[str(row[0])+'/'+str(row[1])] = {str(row[9]):numpy.array([float(i) for i in row[10:]])}
+        except (AttributeError,TypeError):
+            self.dataFile = {}
+            self.dataFile[str(row[0])+'/'+str(row[1])] = {str(row[9]):numpy.array([float(i) for i in row[10:]])}
 
+ 
     def checkForData(self):
         self.dataNameParaDict = {}
         for cmpt in self.parsedList:
@@ -415,19 +439,19 @@ class DesignerMainWindow(QtGui.QMainWindow,Ui_MainWindow):
 #        print self.attribColorMapLabelNameDict,self.attribNameColorLabelDict
         self.cmptNameValuesDict = {}
         for cmpt in self.vizCmptSelectedList:
-            self.cmptNameValuesDict[cmpt] = self.dataFile[cmpt].value
+            if self.fileType == 'h5':
+                self.cmptNameValuesDict[cmpt] = self.dataFile[cmpt].value
+            else:
+                splitText = cmpt.rsplit('/',1)
+                self.cmptNameValuesDict[cmpt] = self.dataFile[splitText[0]][splitText[1]]
+
+        leastValues = [] #consider only the data set with least number of data points
         for value in self.cmptNameValuesDict:
-            try:
-                if len(self.cmptNameValuesDict[value]) < self.numberDataPoints :
-                    self.numberDataPoints = len(self.cmptNameValuesDict[value])
-                else:
-                    pass
-            except AttributeError:
-                self.numberDataPoints = len(self.cmptNameValuesDict[value])
+            leastValues.append(len(self.cmptNameValuesDict[value]))
+        self.numberDataPoints = min(leastValues)
 
         if not DEFAULT_VISUALIZE:
             self.newVizDia.close()
-
         self.binProperties()
 
     def binProperties(self):
@@ -464,6 +488,7 @@ class DesignerMainWindow(QtGui.QMainWindow,Ui_MainWindow):
             self.binSize = int(self.binPropDia.binSizeLineEdit.text())
         else:
             self.binSize = 1
+
         self.numberOfFrames = int(self.binPropDia.numberOfFramesLabel.text())
         self.newBinPropDia.close()
         self.doBin()
@@ -528,12 +553,15 @@ class DesignerMainWindow(QtGui.QMainWindow,Ui_MainWindow):
         for cMapLabel in self.attribColorMapLabelNameDict:
             for cmptParaName in self.attribColorMapLabelNameDict[cMapLabel]:
                 self.frameData[cmptParaName] = numpy.digitize(self.frameData[cmptParaName],self.colorMapLabelMapDict[cMapLabel].stepVals)
+        
 
     def updateViz(self,value):
         for cMapLabel in self.attribColorMapLabelNameDict:
             for cmptParaName in self.attribColorMapLabelNameDict[cMapLabel]:
                 thisCmpt = cmptParaName.rsplit('/',1)[0]
-                self.canvas.vizObjects[thisCmpt].r,self.canvas.vizObjects[thisCmpt].g,self.canvas.vizObjects[thisCmpt].b = self.colorMapLabelMapDict[cMapLabel].colorMap[self.frameData[cmptParaName][value]]
+
+                self.canvas.vizObjects[thisCmpt].r,self.canvas.vizObjects[thisCmpt].g,self.canvas.vizObjects[thisCmpt].b = self.colorMapLabelMapDict[cMapLabel].colorMap[max(0,self.frameData[cmptParaName][value]-1)]
+
         self.canvas.updateGL()
 
     def saveAsMovie(self):
@@ -551,7 +579,6 @@ class DesignerMainWindow(QtGui.QMainWindow,Ui_MainWindow):
                 print 'wrong inputs'
  
     def saveAsAvi(self,start,stop):
-        
 
         oldPath = os.getcwd()
 
@@ -622,9 +649,8 @@ class DesignerMainWindow(QtGui.QMainWindow,Ui_MainWindow):
         self.statusbar.showMessage(name)
         if self.hasData and name !='': #activate plot button
             try:
-                self.dataFile[str(name)]
-                self.plotToolButton.setEnabled(True)
-
+                if self.dataFile[str(name)] :
+                    self.plotToolButton.setEnabled(True)
             except KeyError:
                 self.plotToolButton.setEnabled(False)
                 pass
@@ -653,7 +679,10 @@ class DesignerMainWindow(QtGui.QMainWindow,Ui_MainWindow):
 
         for cmptName in allSelectedNamesParaDict:
             if len(allSelectedNamesParaDict[cmptName]) == 1:
-                line = newPlotWin.plotCanvas.update_graph(self.dataFile[cmptName+'/'+allSelectedNamesParaDict[cmptName][0]].value,cmptName+'/'+allSelectedNamesParaDict[cmptName][0])
+                if self.fileType == 'h5':
+                    line = newPlotWin.plotCanvas.update_graph(self.dataFile[cmptName+'/'+allSelectedNamesParaDict[cmptName][0]].value,cmptName+'/'+allSelectedNamesParaDict[cmptName][0])
+                else:
+                    line = newPlotWin.plotCanvas.update_graph(self.dataFile[cmptName][allSelectedNamesParaDict[cmptName][0]],cmptName+'/'+allSelectedNamesParaDict[cmptName][0])
                 newPlotWin.plotCanvas.axes.set_ylabel(allSelectedNamesParaDict[cmptName][0])
             else:
 #                print 'multiple parameters to plot. Select One.'
@@ -663,7 +692,10 @@ class DesignerMainWindow(QtGui.QMainWindow,Ui_MainWindow):
                     paraName = str(paraName)
                     try:
                         paraIndex = allSelectedNamesParaDict[cmptName].index(paraName)
-                        line = newPlotWin.plotCanvas.update_graph(self.dataFile[cmptName+'/'+allSelectedNamesParaDict[cmptName][0]].value,cmptName+'/'+allSelectedNamesParaDict[cmptName][paraIndex])
+                        if self.fileType == 'h5':
+                            line = newPlotWin.plotCanvas.update_graph(self.dataFile[cmptName+'/'+allSelectedNamesParaDict[cmptName][0]].value,cmptName+'/'+allSelectedNamesParaDict[cmptName][paraIndex])
+                        else:
+                            line = newPlotWin.plotCanvas.update_graph(self.dataFile[cmptName][allSelectedNamesParaDict[cmptName][0]],cmptName+'/'+allSelectedNamesParaDict[cmptName][paraIndex])
                         newPlotWin.plotCanvas.axes.set_ylabel(allSelectedNamesParaDict[cmptName][paraIndex])
                     except ValueError:
                         print 'Invalid parameter name'
