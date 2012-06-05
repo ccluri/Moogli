@@ -278,6 +278,8 @@
   Upinder S. Bhalla, Subhasis Ray, Niraj Dudani, Aditya Gilra of NCBS for feedback and encouragment.
   #+HTML: <br \>  
   Developers of libQGLViewer and its python bindings by Frederic Boudon.
+  #+HTML: <br \>  
+  Harsha and punch for the website
 
 * Collaborate  
   
