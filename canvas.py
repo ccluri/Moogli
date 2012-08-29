@@ -278,7 +278,6 @@ class canvas(QGLViewer):
         ogl.glScissor(*scissor)
         ogl.glViewport(*viewport)
 
-
            
 class colorMap(object):
     def __init__(self,fileName,minVal,maxVal,label):

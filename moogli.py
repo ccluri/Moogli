@@ -4,6 +4,7 @@ import shutil
 import h5py
 import numpy
 import csv
+import neo
 
 from canvas import *
 from moogliLayout import *
@@ -26,11 +27,11 @@ class DesignerMainWindow(QtGui.QMainWindow,Ui_MainWindow):
         self.setupUi(self)
         self.connectActions()
         self.assignIcons()
-        self.fileExtensionMap = {'neuroML(*.xml *.nml)':'XML','csv(*.csv)':'CSV','HDF5(*.h5 *.hdf5)':'HDF5','All Supported(*.h5 *hdf5 *.xml *.nml *.csv)':'All'}
+        self.fileExtensionMap = {'neo(*.plx *.nex *.abf *.smr)':'NEO','neuroML(*.xml *.nml)':'XML','csv(*.csv)':'CSV','HDF5(*.h5 *.hdf5)':'HDF5','All Supported(*.h5 *hdf5 *.xml *.nml *.csv *.plx *.nex *.smr *.abf)':'All'}
 	self.sizeScale = DEFAULT_SIZE_SCALE #this should do into the canvas.py instead        
         self.fileType = None
-	self.fileBasedAction([PATH_SAMPLES + '/timeSeries.csv'])
-#        self.fileBasedAction([PATH_SAMPLES + '/mitral.h5'])
+#	self.fileBasedAction([PATH_SAMPLES + '/timeSeries.csv'])
+        self.fileBasedAction([PATH_SAMPLES + '/mitral.h5'])
 
     def assignIcons(self):
         self.playButton.setIcon(QtGui.QIcon(os.path.join(PATH_ICONS,'play.png')))
@@ -120,6 +121,26 @@ class DesignerMainWindow(QtGui.QMainWindow,Ui_MainWindow):
                     pass
             f.close()
            
+        elif (self.fileType == 'plx') or (self.fileType == 'nex') or (self.fileType == 'abf') or (self.fileType == 'smr'):
+            if self.fileType == 'plx':
+                reader=neo.io.PlexonIO(filename=fileName)
+            elif self.fileType == 'nex':
+                reader=neo.io.NeuroExplorerIO(filename=fileName)
+            elif self.fileType == 'abf':
+                reader=neo.io.AxonIO(filename=fileName)
+            elif self.fileType == 'smr':
+                reader=neo.io.Spike2IO(filename=fileName)
+
+            bl=reader.read(cascade=True,lazy=False)
+            self.possibleData = True
+            self.dataFile = {}
+            for segNo,seg in enumerate(bl.segments):
+                #print segNo, seg
+                for asigNo,asig in enumerate(seg.analogsignals):
+                    #print asigNo, asig
+                    self.dataFile['seg'+str(segNo)+'/'+'aSignal'+str(asigNo)] = {str(asig.units):numpy.array(asig)}
+                    self.parsedList.append(['seg'+str(segNo),'aSignal'+str(asigNo),[float(segNo)*1e-5,float(asigNo)*1e-5,0,(float(segNo)+0.5)*1e-5,(float(asigNo)+0.5)*1e-5,0,1e-5]])
+
         #elif (fileType == 'p'):
         elif (self.fileType == 'h5') or (self.fileType == 'hdf5'):
             self.fileType = 'h5'
@@ -144,6 +165,7 @@ class DesignerMainWindow(QtGui.QMainWindow,Ui_MainWindow):
         else:
             print 'Not a supported Format yet*'
 
+
         if DEFAULT_DRAW:
             self.defaultDrawCompartments()
         else:
@@ -156,7 +178,6 @@ class DesignerMainWindow(QtGui.QMainWindow,Ui_MainWindow):
             self.dataFile = {}
             self.dataFile[str(row[0])+'/'+str(row[1])] = {str(row[9]):numpy.array([float(i) for i in row[10:]])}
 
- 
     def checkForData(self):
         self.dataNameParaDict = {}
         for cmpt in self.parsedList:
@@ -185,7 +206,7 @@ class DesignerMainWindow(QtGui.QMainWindow,Ui_MainWindow):
                 self.selectParameterToVisualize()
         else:
             print 'No data in h5 file / Are you naming them wrong?'
-
+            
 
     def selectParameterToVisualize(self):
         self.colorMapLabelMapDict = {}
@@ -331,12 +352,17 @@ class DesignerMainWindow(QtGui.QMainWindow,Ui_MainWindow):
         self.connect(self.styleSelectDia.allToolButton,QtCore.SIGNAL('clicked()'),self.addAllToCanvasContentList)
         self.connect(self.styleSelectDia.okayPushButton,QtCore.SIGNAL('clicked()'),self.drawCompartments)
         self.connect(self.styleSelectDia.useDefaultsPushButton,QtCore.SIGNAL('clicked()'),self.defaultDrawCompartments)
+        self.connect(self.styleSelectDia.overrideRadioButton,QtCore.SIGNAL('toggled(bool)'),self.enableArrayDraw)
         
        #reparse parsedlist ?
 
         for j,i in enumerate(self.parsedList):
             self.styleSelectDia.listWidget.addItem(i[0]+'/'+i[1])
             self.cmptDict[i[0]+'/'+i[1]] = j
+
+    def enableArrayDraw(self,value):
+        self.styleSelectDia.label_5.setEnabled(value)
+        self.styleSelectDia.placeSelComboBox.setEnabled(value)
 
     def defaultDrawCompartments(self):
         print 'Default Draw Compartment'
@@ -449,7 +475,7 @@ class DesignerMainWindow(QtGui.QMainWindow,Ui_MainWindow):
         for value in self.cmptNameValuesDict:
             leastValues.append(len(self.cmptNameValuesDict[value]))
         self.numberDataPoints = min(leastValues)
-
+        print 'Total number of values: ', leastValues, 'Displaying: ', min(leastValues)
         if not DEFAULT_VISUALIZE:
             self.newVizDia.close()
         self.binProperties()
@@ -579,7 +605,6 @@ class DesignerMainWindow(QtGui.QMainWindow,Ui_MainWindow):
                 print 'wrong inputs'
  
     def saveAsAvi(self,start,stop):
-
         oldPath = os.getcwd()
 
         if DEFAULT_SAVE:
