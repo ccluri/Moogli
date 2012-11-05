@@ -231,12 +231,12 @@
    data.
 
 * Known Issues
-
-  1) Drawing of cylinders/capsules at some times, would show up as discontinous elements.
+  
+  1) Drawing of cylinders/capsules at some times, would show up as discontinous elements.[NOW FIXED]
      #+HTML: <br \>  
      Issue: Drawing of cylinders in OpenGL has an issue Ref: /Moogli/openGLHeaders/objects.py
      #+HTML: <br \>    
-     Current fix: Draw as Ball&Sticks instead
+     Current fix: Draw as Ball&Sticks instead [THIS IS FIXED NOW]
 
 
 * FAQ
