@@ -230,12 +230,13 @@ class cCylinder(BaseObject):
 		"""
 		x1,y1,z1,x2,y2,z2 = self.l_coords[:6]
 		radius = self.l_coords[6]/2
-		subdivisions = 5
+		subdivisions = 7
 		quadric = gluNewQuadric()
 		vx = x2-x1
 		vy = y2-y1
 		vz = z2-z1
 
+		#float ax,rx,ry,rz;
 		length = sqrt( vx*vx + vy*vy + vz*vz )
 
 		glPushMatrix()
@@ -284,7 +285,6 @@ class cCylinder(BaseObject):
   		glTranslate(*[i*-1 for i in self._centralPos[:3]])	#bring pen back to origin.
 		glRotate(*[i*-1 for i in self.rotation[:4]])		#bring back to original orientation
 		glPopMatrix()
- 
 
 class cCapsule(BaseObject):
 	"""
@@ -309,7 +309,7 @@ class cCapsule(BaseObject):
 		"""
 		x1,y1,z1,x2,y2,z2 = self.l_coords[:6]
 		radius = self.l_coords[6]/2
-		subdivisions = 5
+		subdivisions = 7
 		quadric = gluNewQuadric()
 		vx = x2-x1
 		vy = y2-y1
@@ -353,16 +353,15 @@ class cCapsule(BaseObject):
 		gluCylinder(quadric, radius, radius, length, subdivisions, 1)
 
 		gluQuadricOrientation(quadric,GLU_INSIDE)
-  		gluSphere(gluNewQuadric(),radius, subdivisions, subdivisions)
 
+  		gluSphere(gluNewQuadric(),radius, subdivisions, subdivisions)
 		glTranslatef( 0,0,v )
 		
-		gluQuadricOrientation(quadric,GLU_OUTSIDE)
   		gluSphere(gluNewQuadric(),radius, subdivisions, subdivisions)
+		gluDisk( quadric, 0.0, radius, subdivisions, 1)
 
   		glTranslate(*[i*-1 for i in self._centralPos[:3]])	#bring pen back to origin.
 		glRotate(*[i*-1 for i in self.rotation[:4]])		#bring back to original orientation
 		glPopMatrix()
-
  
 			
