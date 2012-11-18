@@ -1,0 +1,73 @@
+List of files:
+    (1) readcell_to_moogli.py: The main code, described below.
+    (2) ca1_absolute.p: Input cell file. Modified from 'ca1_asym.p'.
+    (3) mRNA.plot and calcium.plot: Sample xplot files. Contain junk values.
+    (4) This README.
+
+The python code will take:
+    (1) A *.p file
+    (2) Time series data in xplot format
+and generate a single csv file that Moogli will accept.
+
+The code allows:
+    (1) Multiple copies of the cell to be created in the graphical view.
+    (2) Different variables to be displayed on each cell.
+    (3) Time series for different variables to be of different lengths.
+
+Format description for input files:
+    (1) Use the attached 'ca1_absolute.p' file for cell description. It is a 
+    stripped version of the file you sent. Relative coords converted to 
+    absolute.
+    
+    (2) Use 1 xplot file per variable type. That is, 1 for Calcium, and
+        another for mRNA.
+        (2.1) '/newplot' and blank lines are ignored.
+        (2.2) '/plotname <compartment_name>' defines a new time-series.
+              <compartment_name> should match a compartment from the *.p
+              file.
+
+How missing data is handled:
+    (1) If the time-series for one of the cell's copies runs out before the
+        other, the remaining time is filled in with the minimum value
+        encountered for that variable.
+    (2) Any missing compartments in a given xplot file are also filled in with
+        with the minimum value.
+
+Positioning multiple copies of cells, and filling in for missing 
+compartments can be done within Moogli as well, but there are a few pitfalls 
+-- this makes it smoother for now.
+
+How to generate the movie:
+    (1) First, edit the script parameters at the top of the python script.
+        Importantly, specify names of xplot files. Defaults for the remaining
+        variables should be fine (diameter scaling factor, spatial translation
+        for each cell copy, etc.)
+    (2) Run the script, and you will get a new csv file ('ca1.csv').
+    (3) Start Moogli. Close the mitral cell loader that pops up.
+    (4) Load 'ca1.csv'.
+    (5) In the 'Style Selector' dialog that pops up, just click 'A', then 'OK'.
+        This tells it to pick all the compartments in the csv file for
+        visualization. At this step one could sort the compartments into groups,
+        and shift each group in space, but the csv file already does that.
+    (6) In the next dialog, 'Visualization Options', you specify the different
+        color map properties for the 2 cell copies.
+            (6.1) In the 'Filter' text field, enter 'ca1_0', or simply '_0'.
+            (6.2) Click on 'New' to define a new colormap.
+            (6.3) Click on 'A', to apply this colormap to all the compartments
+                  selected by the filter.
+            (6.4) Repeat using the 'ca1_1' filter, with a different colormap.
+    (7) The next dialog is the binning dialog. Should be self-explanatory.
+    (8) Now the cells should show up. If they don't they are probably too small,
+        or are out of view.
+    (9) Press 'H' to see help. The 'mouse' tab describes many useful controls.
+        Two of the most handy are:
+            (9.1) Middle double-click: Brings the model nicely into view, in
+                  terms of size and position.
+            (9.2) Left double-click: Snaps the view very nicely, making the axes
+                  parallel to the screen's edges.
+    (10) Click on the Play button to view the animation. Take a note of how
+        many frames there are.
+    (11) File > Save Movie, to save movie. Specify range of frames in the dialog
+        that comes up. Specify AVI file. I could not find an AVI file generated,
+        but I did find PNG frames dumped to my disk, which can be bunched
+        together using ImageMagick or something.

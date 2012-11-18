@@ -215,9 +215,9 @@
    <property name="geometry">
     <rect>
      <x>320</x>
-     <y>70</y>
+     <y>110</y>
      <width>321</width>
-     <height>321</height>
+     <height>281</height>
     </rect>
    </property>
   </widget>
@@ -225,13 +225,60 @@
    <property name="geometry">
     <rect>
      <x>320</x>
-     <y>40</y>
+     <y>80</y>
      <width>121</width>
      <height>17</height>
     </rect>
    </property>
    <property name="text">
     <string>Canvas Contents</string>
+   </property>
+  </widget>
+  <widget class="QRadioButton" name="overrideRadioButton">
+   <property name="geometry">
+    <rect>
+     <x>320</x>
+     <y>39</y>
+     <width>116</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Override</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="placeSelComboBox">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>540</x>
+     <y>35</y>
+     <width>101</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <item>
+    <property name="text">
+     <string>Sqr Array</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QLabel" name="label_5">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>430</x>
+     <y>40</y>
+     <width>111</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Place Selected :</string>
    </property>
   </widget>
  </widget>

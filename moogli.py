@@ -21,6 +21,7 @@ from PyQt4 import Qt,QtGui,QtCore
 from matplotlib import pyplot as plt
 from matplotlib.backends.backend_qt4agg import NavigationToolbar2QTAgg as NavigationToolbar
 
+
 class DesignerMainWindow(QtGui.QMainWindow,Ui_MainWindow):
     def __init__(self,parent=None):
         super(DesignerMainWindow, self).__init__(parent)
@@ -778,7 +779,53 @@ class DesignerMainWindow(QtGui.QMainWindow,Ui_MainWindow):
     def doQuit(self):
         QtGui.qApp.closeAllWindows()
 
-app = QtGui.QApplication(sys.argv)
-dmw = DesignerMainWindow()
-dmw.show()
-sys.exit(app.exec_())
+def GLWindow():
+    class GLWindow(QtGui.QMainWindow):
+        def __init__(self, parent = None):
+            super(GLWindow, self).__init__(parent)
+            self.name = 'GL Window '
+            self.setupUi(self)
+
+        def windowTitle(self,name):
+            self.name = name
+            self.setupUi(self)
+
+        def setupUi(self, MainWindow):
+            MainWindow.setObjectName("MainWindow")
+            MainWindow.setWindowModality(QtCore.Qt.NonModal)
+            MainWindow.resize(500, 500)
+            sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.MinimumExpanding)
+            sizePolicy.setHorizontalStretch(0)
+            sizePolicy.setVerticalStretch(0)
+            sizePolicy.setHeightForWidth(MainWindow.sizePolicy().hasHeightForWidth())
+            MainWindow.setSizePolicy(sizePolicy)
+            self.centralwidget = QtGui.QWidget(MainWindow)
+            self.verticalLayout = QtGui.QVBoxLayout(self.centralwidget)
+            self.verticalLayout.setObjectName("verticalLayout")
+            self.canvas = GLCanvas(self.centralwidget)
+            sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+            sizePolicy.setHorizontalStretch(0)
+            sizePolicy.setVerticalStretch(0)
+            sizePolicy.setHeightForWidth(self.canvas.sizePolicy().hasHeightForWidth())
+            self.canvas.setSizePolicy(sizePolicy)
+            self.canvas.setObjectName("canvas")
+            self.verticalLayout.addWidget(self.canvas)
+            MainWindow.setCentralWidget(self.centralwidget)
+            MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", self.name, None, QtGui.QApplication.UnicodeUTF8))
+
+    app = QtGui.QApplication([])
+    mainWin = GLWindow()
+    mainWin.show()
+    return mainWin,app
+
+def show(mainWin,app):
+    #print 'reached'
+    mainWin.show()
+    sys.exit(app.exec_())
+    #print 'here'
+
+if __name__ == "__main__":
+    app = QtGui.QApplication(sys.argv)
+    dmw = DesignerMainWindow()
+    dmw.show()
+    sys.exit(app.exec_())

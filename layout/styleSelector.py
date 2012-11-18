@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'styleSelector.ui'
 #
-# Created: Sun May 13 10:56:32 2012
+# Created: Thu May 24 13:53:16 2012
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -67,11 +67,23 @@ class Ui_Dialog(object):
         self.label_3.setGeometry(QtCore.QRect(30, 410, 101, 17))
         self.label_3.setObjectName(_fromUtf8("label_3"))
         self.canvasContentsListWidget = QtGui.QListWidget(Dialog)
-        self.canvasContentsListWidget.setGeometry(QtCore.QRect(320, 70, 321, 321))
+        self.canvasContentsListWidget.setGeometry(QtCore.QRect(320, 110, 321, 281))
         self.canvasContentsListWidget.setObjectName(_fromUtf8("canvasContentsListWidget"))
         self.label_4 = QtGui.QLabel(Dialog)
-        self.label_4.setGeometry(QtCore.QRect(320, 40, 121, 17))
+        self.label_4.setGeometry(QtCore.QRect(320, 80, 121, 17))
         self.label_4.setObjectName(_fromUtf8("label_4"))
+        self.overrideRadioButton = QtGui.QRadioButton(Dialog)
+        self.overrideRadioButton.setGeometry(QtCore.QRect(320, 39, 116, 22))
+        self.overrideRadioButton.setObjectName(_fromUtf8("overrideRadioButton"))
+        self.placeSelComboBox = QtGui.QComboBox(Dialog)
+        self.placeSelComboBox.setEnabled(False)
+        self.placeSelComboBox.setGeometry(QtCore.QRect(540, 35, 101, 27))
+        self.placeSelComboBox.setObjectName(_fromUtf8("placeSelComboBox"))
+        self.placeSelComboBox.addItem(_fromUtf8(""))
+        self.label_5 = QtGui.QLabel(Dialog)
+        self.label_5.setEnabled(False)
+        self.label_5.setGeometry(QtCore.QRect(430, 40, 111, 20))
+        self.label_5.setObjectName(_fromUtf8("label_5"))
 
         self.retranslateUi(Dialog)
         self.styleComboBox.setCurrentIndex(2)
@@ -94,4 +106,7 @@ class Ui_Dialog(object):
         self.label_2.setText(QtGui.QApplication.translate("Dialog", "Offset Position", None, QtGui.QApplication.UnicodeUTF8))
         self.label_3.setText(QtGui.QApplication.translate("Dialog", "Offset Angle", None, QtGui.QApplication.UnicodeUTF8))
         self.label_4.setText(QtGui.QApplication.translate("Dialog", "Canvas Contents", None, QtGui.QApplication.UnicodeUTF8))
+        self.overrideRadioButton.setText(QtGui.QApplication.translate("Dialog", "Override", None, QtGui.QApplication.UnicodeUTF8))
+        self.placeSelComboBox.setItemText(0, QtGui.QApplication.translate("Dialog", "Sqr Array", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_5.setText(QtGui.QApplication.translate("Dialog", "Place Selected :", None, QtGui.QApplication.UnicodeUTF8))
 
