@@ -43,11 +43,6 @@ class canvas(QGLViewer):
         self.sceneObjects = {}
         self.cellComptDict = {}
 
-#        self.__rectangle = QtCore.QRect()
-#        self.__selectionMode = 0
-#        self.__objects = []
-#        self.__selection = []
-
     def init(self):
         self.restoreStateFromFile()
         self.setBackgroundColor(QtGui.QColor(255,255,255,255))
@@ -87,82 +82,6 @@ class canvas(QGLViewer):
             self.compartmentSelected.emit(str(self.sceneObjects.items()[int(self.selectedName())][0]))
             self.selectedObjects.add(self.sceneObjects.items()[int(self.selectedName())][1])
 
-    # def __drawSelectionRectangle(self):
-    #     self.startScreenCoordinatesSystem()
-    #     ogl.glDisable(ogl.GL_LIGHTING)
-    #     ogl.glEnable(ogl.GL_BLEND)
-
-    #     ogl.glColor4f(0.0, 0.0, 0.3, 0.3)
-    #     ogl.glBegin(ogl.GL_QUADS)
-    #     ogl.glVertex2i(self.__rectangle.left(),  self.__rectangle.top())
-    #     ogl.glVertex2i(self.__rectangle.right(), self.__rectangle.top())
-    #     ogl.glVertex2i(self.__rectangle.right(), self.__rectangle.bottom())
-    #     ogl.glVertex2i(self.__rectangle.left(),  self.__rectangle.bottom())
-    #     ogl.glEnd()
-
-    #     ogl.glLineWidth(2.0)
-    #     ogl.glColor4f(0.4, 0.4, 0.5, 0.5)
-    #     ogl.glBegin(ogl.GL_LINE_LOOP)
-    #     ogl.glVertex2i(self.__rectangle.left(),  self.__rectangle.top())
-    #     ogl.glVertex2i(self.__rectangle.right(), self.__rectangle.top())
-    #     ogl.glVertex2i(self.__rectangle.right(), self.__rectangle.bottom())
-    #     ogl.glVertex2i(self.__rectangle.left(),  self.__rectangle.bottom())
-    #     ogl.glEnd()
-
-    #     ogl.glDisable(ogl.GL_BLEND)
-    #     ogl.glEnable(ogl.GL_LIGHTING)
-    #     self.stopScreenCoordinatesSystem()
-
-    # def endSelection(self,p):
-    #     selection = self.getMultipleSelection()
-    #     for zmin,zmax,id in selection:
-    #         if self.__selectionMode == 1:
-    #             self.addIdToSelection(id)
-    #         elif self.__selectionMode == 2 : 
-    #             self.removeIdFromSelection(id)
-    #     self.__selectionMode = 0
-    
-    # def mousePressEvent(self,e):
-    #     """ Mouse events functions """
-    #     # Start selection. Mode is ADD with Shift key and TOGGLE with Alt key.
-    #     self.__rectangle = QtCore.QRect(e.pos(), e.pos())
-    #     if e.button() == QtCore.Qt.LeftButton and e.modifiers() == QtCore.Qt.ShiftModifier:
-    #         self.__selectionMode = 1
-    #     elif e.button() == QtCore.Qt.LeftButton and e.modifiers() == QtCore.Qt.AltModifier:
-    #         self.__selectionMode = 2
-    #     else:
-    #         QGLViewer.mousePressEvent(self,e)
-    
-    # def mouseMoveEvent(self,e):
-    #     if self.__selectionMode != 0:
-    #         # Updates rectangle_ coordinates and redraws rectangle
-    #         self.__rectangle.setBottomRight(e.pos())
-    #         self.updateGL()
-    #     else:
-    #         QGLViewer.mouseMoveEvent(self,e)
-    
-    # def mouseReleaseEvent(self,e):
-    #     if self.__selectionMode != 0:
-    #         # Actual selection on the rectangular area.
-    #         # Possibly swap left/right and top/bottom to make rectangle_ valid.
-    #         self.__rectangle = self.__rectangle.normalized()
-    #         # Define selection window dimensions
-    #         self.setSelectRegionWidth(self.__rectangle.width())
-    #         self.setSelectRegionHeight(self.__rectangle.height())
-    #         # Compute rectangle center and perform selection
-    #         self.select(self.__rectangle.center())
-    #         # Update display to show new selected objects
-    #         self.updateGL()
-    #     else:
-    #         QGLViewer.mouseReleaseEvent(self,e)
-
-    # def addIdToSelection(self,id):
-    #     if not id in self.__selection:
-    #         self.__selection.append(id)
-    
-    # def removeIdFromSelection(self,id):
-    #     self.__selection.remove(id)
-    
     def addToVisualize(self,sceneObjectName):
         if sceneObjectName in self.sceneObjects:
             self.vizObjects[sceneObjectName] = self.sceneObjects[sceneObjectName]
