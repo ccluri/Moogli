@@ -60,7 +60,9 @@
                                  font-weight:bold; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="./css/bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="./static/css/docs.css" />
+<link rel="stylesheet" type="text/css" href="./static/css/bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="./static/css/bootstrap-responsive.css" />
 <script type="text/javascript">
 <!--/*--><![CDATA[/*><!--*/
  function CodeHighlightOn(elem, id)
@@ -102,10 +104,8 @@
 
 
 <div class="row">
-<div class="span15">
 
 <div class="span3 bs-docs-sidebar">
-<ul class="nav nav-list bs-docs-sidenav affix">
 <p>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
@@ -128,14 +128,11 @@
 </div>
 </div>
 
-</ul>
 </div>
 
+<div class="span9 offset1">
 
-
-<div class="span12">
 </p>
-
 <div id="outline-container-1" class="outline-2">
 <h2 id="sec-1">Introduction</h2>
 <div class="outline-text-2" id="text-1">
@@ -174,16 +171,16 @@
 </li>
 <li>hdf5
 </li>
-<li>matplotlib   
+<li>matplotlib
 </li>
-<li>mencoder   
+<li>mencoder
 </li>
 <li><a href="https://gforge.inria.fr/frs/?group_id=773">libQGLViewer-2.3.15-py</a> &amp; install instructions <a href="http://www.libqglviewer.com//installUnix.html#linux">here</a>
 </li>
 <li><a href="https://gforge.inria.fr/frs/?group_id=773">PyQGLViewer0.10</a> (first install libQGLViewer-2.3.15-py) and untar contents
 
 <p>
-      cd / PyQGLViewer0.10 
+      cd / PyQGLViewer0.10
       <br \>
       &gt;python setup.py build   # to compile
       <br \>
@@ -258,8 +255,8 @@
   structure  includes morphology of the cell(s) being visualized. Currently
   support Morphml (.xml) Neuroml(.xml) and .csv
 </p>
-<p>  
-  Moogli now also supports .csv for data visualization. See /samples/timeSeries.csv for example  
+<p>
+  Moogli now also supports .csv for data visualization. See /samples/timeSeries.csv for example
 </p>
 <p>
   <a href="#sec-7">In future</a>: Employ a standard format for data visualization.
@@ -345,11 +342,11 @@
 </p>
 <p>
   Control + O : Open File
-  <br \>  
+  <br \>
   Control + S : Save As
-  <br \>  
+  <br \>
   Control + Q : Quit
-  <br \>  
+  <br \>
   Spacebar    : Play/Pause Visualization
 </p>
 
@@ -573,7 +570,7 @@
 <p>
    filename.h5&gt;cellName&gt;compartmenName&gt;propertyName
 </p>
-<p> 
+<p>
    corresponds to the arrayof values of that property (can be membrane potential / Ca concentration
    etc) over time. This is because, it gives an easy intuitive handle to the
    data.
@@ -590,9 +587,9 @@
 
 <ol>
 <li>Drawing of cylinders/capsules at some times, would show up as discontinous elements.[NOW FIXED]
-     <br \>  
+     <br \>
      Issue: Drawing of cylinders in OpenGL has an issue Ref: /Moogli/openGLHeaders/objects.py
-     <br \>    
+     <br \>
      Current fix: Draw as Ball&amp;Sticks instead [THIS IS FIXED NOW]
 </li>
 </ol>
@@ -610,12 +607,12 @@
 
 <p>
   Q. Would Moogli support <b>some</b> specific file format?
-  <br \>  
+  <br \>
   A. The idea is to have as many supported formats as possible. Eventually that is.
 </p>
 <p>
   Q. I was able to see the cell initially, I zoomed out/in, now I do not see the cell!
-  <br \>    
+  <br \>
   A. In the /Moogli folder look for ".MoogliState.xml" file and delete it. This arises because
   of no limitation on zooming.
 </p>
@@ -637,9 +634,9 @@
 
 <p>
   Upinder S. Bhalla, Subhasis Ray, Niraj Dudani, Aditya Gilra of NCBS for feedback and encouragment.
-  <br \>  
+  <br \>
   Developers of libQGLViewer and its python bindings by Frederic Boudon.
-  <br \>  
+  <br \>
   Harsha and punch for the website
 </p>
 </div>
@@ -651,8 +648,8 @@
 <div class="outline-text-2" id="text-12">
 
 
-<p>  
-  We welcome you to collaborate on this project. Please send us your details, and how you can contribute. 
+<p>
+  We welcome you to collaborate on this project. Please send us your details, and how you can contribute.
 </p>
 </div>
 
@@ -665,18 +662,26 @@
 
 <p>
   Upinder S. Bhalla : bhalla[at]ncbs[dot]res[dot]in
-  <br \>  
+  <br \>
   C Hanuma Chaitanya : chaitanyah[at]ncbs[dot]res[dot]in
 </div>
 </div>
+</div>
+</div>
+</div>
+
+<div>
+<script type="text/javascript" src="./static/js/jquery.js" /></script>
+<script type="text/javascript" src="./static/js/org-customize.js"/></script>
+<script type="text/javascript" src="./static/js/bootstrap.js" /></script>
 </div>
 </p></div>
 </div>
 </div>
 
 <div id="postamble">
-<p class="date">Date: 2012-11-20 22:44:57 CET</p>
-<p class="creator">Org version 7.8.02 with Emacs version 23</p>
+<p class="date">Date: 2012-12-01T00:53+0530</p>
+<p class="creator"><a href="http://orgmode.org">Org</a> version 7.8.11 with <a href="http://www.gnu.org/software/emacs/">Emacs</a> version 24</p>
 <a href="http://validator.w3.org/check?uri=referer">Validate XHTML 1.0</a>
 
 </div>
