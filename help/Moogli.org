@@ -1,6 +1,9 @@
 #+TITLE: Moogli
 #+OPTIONS:   H:3 num:nil toc:1 ^:{} author:nil email:nil
-#+STYLE:  <link rel="stylesheet" type="text/css" href="./css/bootstrap.css" />
+#+STYLE:  <link rel="stylesheet" type="text/css" href="./static/css/docs.css" />
+#+STYLE:  <link rel="stylesheet" type="text/css" href="./static/css/bootstrap.css" />
+#+STYLE:  <link rel="stylesheet" type="text/css" href="./static/css/bootstrap-responsive.css" />
+
 #+STARTUP: oddeven
 
 #+ATTR_HTML: width=80%
@@ -9,18 +12,13 @@
 #+END_CENTER
 
 #+HTML: <div class="row">
-#+HTML: <div class="span15">
 
 #+HTML: <div class="span3 bs-docs-sidebar">
-#+HTML: <ul class="nav nav-list bs-docs-sidenav affix">
 [TABLE-OF-CONTENTS]
-#+HTML: </ul>
 #+HTML: </div>
 
+#+HTML: <div class="span9 offset1">
 
-
-#+HTML: <div class="span12">
-   
 * Introduction
 
   Moogli (a sister project of [[http://moose.ncbs.res.in][MOOSE]]) is a simulator independent openGL based
@@ -37,12 +35,12 @@
    1) python2.6/2.7
    2) PyQt4
    3) hdf5
-   4) matplotlib   
-   5) mencoder   
+   4) matplotlib
+   5) mencoder
    6) [[https://gforge.inria.fr/frs/?group_id=773][libQGLViewer-2.3.15-py]] & install instructions [[http://www.libqglviewer.com//installUnix.html#linux][here]]
    7) [[https://gforge.inria.fr/frs/?group_id=773][PyQGLViewer0.10]] (first install libQGLViewer-2.3.15-py) and untar contents
 
-      cd / PyQGLViewer0.10 
+      cd / PyQGLViewer0.10
       #+HTML: <br \>
       >python setup.py build   # to compile
       #+HTML: <br \>
@@ -54,7 +52,7 @@
 ** Get Moogli
 
    Download and unzip Moogli from [[https://github.com/ccluri/Moogli][git repo]]
-   
+
 ** Run Moogli
 
    In terminal, cd to location of unzipped Moogli folder (/Moogli)
@@ -62,7 +60,7 @@
    >python moogli.py
 
    You will see an white screen with axes on the bottom left.
-   
+
 * Supported Formats
 
    #+ATTR_HTML: width=80%
@@ -78,8 +76,8 @@
   The format currently employed for data visualization is [[Additional Information][hdf5]]. The file
   structure  includes morphology of the cell(s) being visualized. Currently
   support Morphml (.xml) Neuroml(.xml) and .csv
-  
-  Moogli now also supports .csv for data visualization. See /samples/timeSeries.csv for example  
+
+  Moogli now also supports .csv for data visualization. See /samples/timeSeries.csv for example
 
   [[TO DO][In future]]: Employ a standard format for data visualization.
   Also plans to include electrophys file formats.
@@ -92,7 +90,7 @@
 
   Save as movie (.avi) for data visualization.
   [Users will be able to 'direct' their movies soon]
-  
+
 * Defaults
 
   Refer to /Moogli/defaults.py file (the file is self explanatory via comments)
@@ -114,7 +112,7 @@
   #+END_CENTER
 
   Mouse - User can bring this up by hitting 'H' key
-  
+
   #+ATTR_HTML: width=60%
   #+BEGIN_CENTER
   [[./static/images/mouseShortcuts.png]]
@@ -123,14 +121,14 @@
   Additionally:
 
   Control + O : Open File
-  #+HTML: <br \>  
+  #+HTML: <br \>
   Control + S : Save As
-  #+HTML: <br \>  
+  #+HTML: <br \>
   Control + Q : Quit
-  #+HTML: <br \>  
+  #+HTML: <br \>
   Spacebar    : Play/Pause Visualization
 
-  
+
 * Use Cases
 
 ** Inspect morphology of cell
@@ -138,9 +136,9 @@
    File>Open> (/Moogli/samples/mitralCell.xml)
 
    #+ATTR_HTML: width=80%
-   #+BEGIN_CENTER 
+   #+BEGIN_CENTER
    [[./static/images/mitralCell1.png]]
-   #+END_CENTER 
+   #+END_CENTER
 
    Above prompt is only seen when [[Defaults][DEFAULT DRAW]] is False
 
@@ -239,28 +237,28 @@
    following a strict tree structure. For example,
 
    filename.h5>cellName>compartmenName>propertyName
- 
+
    corresponds to the arrayof values of that property (can be membrane potential / Ca concentration
    etc) over time. This is because, it gives an easy intuitive handle to the
    data.
 
 * Known Issues
-  
+
   1) Drawing of cylinders/capsules at some times, would show up as discontinous elements.[NOW FIXED]
-     #+HTML: <br \>  
+     #+HTML: <br \>
      Issue: Drawing of cylinders in OpenGL has an issue Ref: /Moogli/openGLHeaders/objects.py
-     #+HTML: <br \>    
+     #+HTML: <br \>
      Current fix: Draw as Ball&Sticks instead [THIS IS FIXED NOW]
 
 
 * FAQ
 
   Q. Would Moogli support *some* specific file format?
-  #+HTML: <br \>  
+  #+HTML: <br \>
   A. The idea is to have as many supported formats as possible. Eventually that is.
 
   Q. I was able to see the cell initially, I zoomed out/in, now I do not see the cell!
-  #+HTML: <br \>    
+  #+HTML: <br \>
   A. In the /Moogli folder look for ".MoogliState.xml" file and delete it. This arises because
   of no limitation on zooming.
 
@@ -272,20 +270,30 @@
 * Acknowledgements
 
   Upinder S. Bhalla, Subhasis Ray, Niraj Dudani, Aditya Gilra of NCBS for feedback and encouragment.
-  #+HTML: <br \>  
+  #+HTML: <br \>
   Developers of libQGLViewer and its python bindings by Frederic Boudon.
-  #+HTML: <br \>  
+  #+HTML: <br \>
   Harsha and punch for the website
 
-* Collaborate  
-  
-  We welcome you to collaborate on this project. Please send us your details, and how you can contribute. 
+* Collaborate
+
+  We welcome you to collaborate on this project. Please send us your details, and how you can contribute.
 
 * Contact
 
   Upinder S. Bhalla : bhalla[at]ncbs[dot]res[dot]in
-  #+HTML: <br \>  
+  #+HTML: <br \>
   C Hanuma Chaitanya : chaitanyah[at]ncbs[dot]res[dot]in
 #+HTML: </div>
 #+HTML: </div>
 #+HTML: </div>
+#+HTML: </div>
+#+HTML: </div>
+
+#+BEGIN_HTML
+<div>
+<script type="text/javascript" src="./static/js/jquery.js" /></script>
+<script type="text/javascript" src="./static/js/org-customize.js"/></script>
+<script type="text/javascript" src="./static/js/bootstrap.js" /></script>
+</div>
+#+END_HTML
