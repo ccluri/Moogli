@@ -358,7 +358,7 @@ class cCapsule(BaseObject):
 		glTranslatef( 0,0,v )
 		
   		gluSphere(gluNewQuadric(),radius, subdivisions, subdivisions)
-		gluDisk( quadric, 0.0, radius, subdivisions, 1)
+		#gluDisk( quadric, 0.0, radius, subdivisions, 1)
 
   		glTranslate(*[i*-1 for i in self._centralPos[:3]])	#bring pen back to origin.
 		glRotate(*[i*-1 for i in self.rotation[:4]])		#bring back to original orientation

@@ -225,49 +225,49 @@ class colorMap(object):
             if (maxVal != None):
                 self.setMinMaxValue(minVal,maxVal)
 
-# class GLCanvas(QGLViewer):
-#     compartmentSelected = QtCore.pyqtSignal(QtCore.QString)
+class GLCanvas(QGLViewer):
+    compartmentSelected = QtCore.pyqtSignal(QtCore.QString)
 
-#     def __init__(self,parent=None):
-#         QGLViewer.__init__(self,parent)
-#         self.setStateFileName('.MoogliState.xml')
-#         self.vizObjects = {}
-#         self.cellComptDict = {}
+    def __init__(self,parent=None):
+        QGLViewer.__init__(self,parent)
+        self.setStateFileName('.MoogliState.xml')
+        self.vizObjects = {}
+        self.cellComptDict = {}
 
-#     def init(self):
-#         self.restoreStateFromFile()
-#         self.setBackgroundColor(QtGui.QColor(255,255,255,255))
-#         self.setSceneRadius(10.0)
+    def init(self):
+        self.restoreStateFromFile()
+        self.setBackgroundColor(QtGui.QColor(255,255,255,255))
+        self.setSceneRadius(10.0)
 
-#     def drawNewCompartment(self,cellName,name,coords,style=3,cellCentre=[0.0,0.0,0.0],cellAngle=[0.0,0.0,0.0,0.0]):
-#         ''' name = 'segmentName',cellName= 'mitral', coords = [x0,y0,z0,x,y,z,d] , style = 1/2/3/4'''
-#         if (coords[0]!=coords[3] or coords[1]!=coords[4] or coords[2]!=coords[5]): #not a soma
-#             if style == 1 : #disk
-#                 compartment = somaDisk(self,name,cellName,coords,cellCentre,cellAngle)
-#             elif style == 2: #line
-#                 compartment = cLine(self,name,cellName,coords,cellCentre,cellAngle)
-#             elif style == 3: #cylinder
-#                 compartment = cCylinder(self,name,cellName,coords,cellCentre,cellAngle)
-#             elif style == 4: #capsule
-#                 compartment = cCapsule(self,name,cellName,coords,cellCentre,cellAngle)
-#         else: #soma case
-#             if style == 1 : #disk
-#                 compartment = somaDisk(self,name,cellName,coords,cellCentre,cellAngle)
-#             else: #sphere
-#                 compartment = somaSphere(self,name,cellName,coords,cellCentre,cellAngle)
+    def drawNewCompartment(self,cellName,name,coords,style=3,cellCentre=[0.0,0.0,0.0],cellAngle=[0.0,0.0,0.0,0.0]):
+        ''' name = 'segmentName',cellName= 'mitral', coords = [x0,y0,z0,x,y,z,d] , style = 1/2/3/4'''
+        if (coords[0]!=coords[3] or coords[1]!=coords[4] or coords[2]!=coords[5]): #not a soma
+            if style == 1 : #disk
+                compartment = somaDisk(self,name,cellName,coords,cellCentre,cellAngle)
+            elif style == 2: #line
+                compartment = cLine(self,name,cellName,coords,cellCentre,cellAngle)
+            elif style == 3: #cylinder
+                compartment = cCylinder(self,name,cellName,coords,cellCentre,cellAngle)
+            elif style == 4: #capsule
+                compartment = cCapsule(self,name,cellName,coords,cellCentre,cellAngle)
+        else: #soma case
+            if style == 1 : #disk
+                compartment = somaDisk(self,name,cellName,coords,cellCentre,cellAngle)
+            else: #sphere
+                compartment = somaSphere(self,name,cellName,coords,cellCentre,cellAngle)
 
-# #        self.vizObjects[cellName+'/'+name] = compartment #add cmpt to sceneobjects
-#         try:
-#             self.cellComptDict[cellName].append(compartment)
-#         except KeyError:
-#             self.cellComptDict[cellName] = [compartment]
+#        self.vizObjects[cellName+'/'+name] = compartment #add cmpt to sceneobjects
+        try:
+            self.cellComptDict[cellName].append(compartment)
+        except KeyError:
+            self.cellComptDict[cellName] = [compartment]
 
-#         return compartment
+        return compartment
 
-#     def draw(self):
-# #        print len(self.vizObjects)
-#         for obj in self.vizObjects.values():
-#             obj.render() 
+    def draw(self):
+#        print len(self.vizObjects)
+        for obj in self.vizObjects.values():
+            obj.render() 
 
 class GLWindow(QtGui.QMainWindow):
     def __init__(self, parent = None):
