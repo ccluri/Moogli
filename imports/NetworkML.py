@@ -18,15 +18,12 @@ class NetworkML():
         #self.nml_params = nml_params
 
     def readNetworkMLFromFile(self,filename,params={}):
-        """ 
-
-        """
         print "reading file ... ", filename
         tree = ET.parse(filename)
         root_element = tree.getroot()
         return self.readNetworkML(root_element,params,root_element.attrib['lengthUnits'])
 
-    def readNetworkML(self,network,params={},lengthUnits="micrometer"):
+    def readNetworkML(self,network,cellDict,params={},lengthUnits="micrometer"):
         """
         This returns populationDict = { 'populationname1':(cellname,{instanceid1:moosecell, ... }) , ... }
         and projectionDict = { 'projectionname1':(source,target,[(syn_name1,pre_seg_path,post_seg_path),...]) , ... }
@@ -36,7 +33,7 @@ class NetworkML():
         else:
             self.length_factor = 1.0
         self.network = network
-        #self.cellSegmentDict = {}
+
         self.params = params
         print "creating populations ... "
         self.createPopulations() # create cells
