@@ -101,10 +101,19 @@ class MoogliGUI(QtGui.QMainWindow,Ui_MainWindow):
         self.parsedList = []
 
         if (self.fileType == 'xml') or (self.fileType =='nml'):
-            from imports.MorphML import MorphML
-            mml = MorphML()
-            self.parsedList = mml.readMorphMLFromFile(fileName)
-
+            #from imports.MorphML import MorphML
+            from imports.NetworkML import NetworkML
+            #mml = MorphML()
+            mml = NetworkML()
+            #self.parsedList = mml.readMorphMLFromFile(fileName)
+            #self.populationDict[populationname] = (cellname,{})
+            self.popDict = mml.readNetworkMLFromFile(fileName)
+            self.parsedList = []
+            for ii in self.popDict.itervalues():
+                for jj in ii[1].itervalues():
+                    for kk in jj:
+                        self.parsedList.append(kk)
+            #print self.parsedList
         elif (self.fileType == 'csv'):
             f = open(fileName,'r')
             testLine = f.readline()
