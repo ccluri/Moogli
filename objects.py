@@ -20,31 +20,27 @@ from OpenGL.GL import *
 from OpenGL.raw.GLUT import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
-from numpy import sqrt,arccos,arctan,absolute
+from numpy import sqrt,arccos,arctan,absolute,array,float32,random
+import OpenGL.arrays.vbo as glvbo
 
 class BaseObject(object):
-	"""
-	Base class for any object used in the GLWidget class.
-	"""
 	def __init__(self):
 		"""
 		Constructor of the base class. Usually, it should be called in
 		the constructor of the inherited classes.
 		"""
 		self.r, self.g, self.b, self.a = 1.0, 0.0, 0.0, 1.0
-
+		
 		self.name = None
-                self.drawAs = None
-                
-                self.startPos = None
-                self.endPos = None
-                self.dia = None
-                
+		self.drawAs = None
+		
+		self.startPos = None
+		self.endPos = None
+		self.dia = None
+		
 		self.subdivisions = 10
-
 	def getName(self):
 		return self.name
-
 	def render(self):
 		"""
 		Virtual method that should be overridden in base-classes.
@@ -56,27 +52,31 @@ class Point(BaseObject):
     """
     Class that defines a point
     """
-    def __init__(self, name, position, dia=1.0):
+    def __init__(self):
         """
         Point constructor
         """
         super(Point, self).__init__()
-        self.name = name
-        self.drawAs = 'Point'
-        self.startPos = position
-        self.dia = 5.0
-
+        #self.name = name
+        #self.drawAs = 'Point'
+        #self.startPos = position
+        #self.dia = 5.0
+	self.data = array(.2*random.randn(100000,3),dtype=float32)
+	self.colordata = array(random.randn(100000,3),dtype=float32)
+	self.count = self.data.shape[0]
+	self.vbo = glvbo.VBO(self.data)
+	self.colorvbo = glvbo.VBO(self.colordata) #this is not even the best method out there, see http://pyopengl.sourceforge.net/context/tutorials/shader_2.xhtml
+	
     def render(self):
-        glPushMatrix()
-        glColor(self.r, self.g, self.b, self.a)
+	glClear(GL_COLOR_BUFFER_BIT)
+	#glColor(self.r, self.g, self.b, self.a)
+	self.vbo.bind()
+	glEnableClientState(GL_VERTEX_ARRAY)
+	glEnableClientState(GL_COLOR_ARRAY)
+	glVertexPointer(3, GL_FLOAT, 0, self.vbo)
+	glColorPointer(3, GL_FLOAT, 0, self.colorvbo)
+	glDrawArrays(GL_POINTS, 0, self.count)
 
-        glPointSize(self.dia)
-        glDisable(GL_LIGHTING)
-        glBegin(GL_POINTS)
-        glVertex3f(self.startPos[0],self.startPos[1],self.startPos[2])
-        glEnd()		
-        glEnable(GL_LIGHTING)
-        glPopMatrix()	
 
 class Sphere(BaseObject):
     """

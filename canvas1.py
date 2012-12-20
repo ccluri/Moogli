@@ -24,7 +24,7 @@ class GLCanvas(QGLViewer):
         pass
     
     def drawObject1(self):
-        self.vizObjects['Soma'] = Cylinder('Soma',[0.0,0.0,0.0],[1.0,1.0,1.0],1.0)
+        self.vizObjects['Soma'] = Point()
 
     def readFile(self,filename):
         f = FileHandler(filename)
