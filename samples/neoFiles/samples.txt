@@ -1,3 +1,0 @@
-These sample files have been taken from
-https://portal.g-node.org/neo/
-http://neuralensemble.org/ 's neo > Exmaples. 
