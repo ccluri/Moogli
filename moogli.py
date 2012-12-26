@@ -1,20 +1,23 @@
 from PyQt4 import Qt,QtGui,QtCore
-from canvas1 import GLCanvas
+from canvas import GLCanvas
 import sys
 
 def Moogli():
+
+
     class GLApp(QtGui.QApplication):
+
         def __init__(self, args):
             QtGui.QApplication.__init__(self,args)
             self.window = GLWindow()
             self.canvas = self.window.canvas
-            
 
         def show(self):
             self.window.show()
             sys.exit(self.exec_())
 
     class GLWindow(QtGui.QMainWindow):
+
         def __init__(self, parent = None):
             super(GLWindow, self).__init__(parent)
             self.name = 'Moogli'

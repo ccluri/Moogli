@@ -1,5 +1,22 @@
-from xml.etree import ElementTree as ET
+## Description: utility functions used while loading NeuroML L1,2,3 files.
+## Version 1.0 by Aditya Gilra, NCBS, Bangalore, India, 2011 for serial MOOSE
+## Version 1.5 by Niraj Dudani, NCBS, Bangalore, India, 2012, modified for parallel MOOSE
+## Version 1.6 by Aditya Gilra, NCBS, Bangalore, India, 2012, minor changes for parallel MOOSE
+
+"""
+Some useful constants like namespaces are defined.
+And they can be set in ElementTree root element via set_neuroml_namespaces_attribs(neuromlroot).
+Use tweak_model(root_element, params) to exclude certain populations and projections
+while still including certain others.
+indent(...) is an in-place prettyprint formatter copied from http://effbot.org/zone/element-lib.htm
+"""
+
+from xml.etree import cElementTree as ET
+from xml.etree import ElementTree as slowET
 from math import *
+import os
+
+neuroml_debug = False
 
 neuroml_ns='http://morphml.org/neuroml/schema'
 nml_ns='http://morphml.org/networkml/schema'
@@ -9,17 +26,30 @@ cml_ns='http://morphml.org/channelml/schema'
 meta_ns='http://morphml.org/metadata/schema'
 xsi_ns='http://www.w3.org/2001/XMLSchema-instance'
 
-## ElementTree parse works an order of magnitude or more faster than minidom
-## BUT it doesn't keep the original namespaces,
+### ElementTree parse works an order of magnitude or more faster than minidom
+### BUT it doesn't keep the original namespaces,
 ## from http://effbot.org/zone/element-namespaces.htm , I got _namespace_map
-# neuroml, bio, mml, etc are defined above
-ET._namespace_map[neuroml_ns] = 'neuroml'
-ET._namespace_map[nml_ns] = 'nml'
-ET._namespace_map[mml_ns] = 'mml'
-ET._namespace_map[bio_ns] = 'bio'
-ET._namespace_map[cml_ns] = 'cml'
-ET._namespace_map[meta_ns] = 'meta'
-ET._namespace_map[xsi_ns] = 'xsi'
+## neuroml_ns, bio_ns, mml_ns, etc are defined above
+slowET._namespace_map[neuroml_ns] = 'neuroml'
+slowET._namespace_map[nml_ns] = 'nml'
+slowET._namespace_map[mml_ns] = 'mml'
+slowET._namespace_map[bio_ns] = 'bio'
+slowET._namespace_map[cml_ns] = 'cml'
+slowET._namespace_map[meta_ns] = 'meta'
+slowET._namespace_map[xsi_ns] = 'xsi'
+
+### cElementTree is much faster than ElementTree and is API compatible with the latter,
+### but instead of _namespace_map above, use register_namespace below ...
+### but this works only with python2.7 onwards, so stick to above,
+### with import elementtree.ElementTree alongwith importing cElementTree as at
+### http://dev.blogs.nuxeo.com/2006/02/elementtree-serialization-namespace-prefixes.html
+#ET.register_namespace('neuroml',neuroml_ns)
+#ET.register_namespace('nml',nml_ns)
+#ET.register_namespace('mml',mml_ns)
+#ET.register_namespace('bio',bio_ns)
+#ET.register_namespace('cml',cml_ns)
+#ET.register_namespace('meta',meta_ns)
+#ET.register_namespace('xsi',xsi_ns)
 
 CELSIUS_default = 32.0 # deg C # default temperature if meta:property tag for temperature is not present
 VMIN = -0.1 # Volts
@@ -233,3 +263,10 @@ safe_list = ['acos', 'asin', 'atan', 'atan2', 'ceil',
 safe_dict = dict([ (k, locals().get(k, None)) for k in safe_list ])
 ## add any needed builtins back in.
 safe_dict['abs'] = abs
+
+def find_first_file(name, path):
+    """ Finds and returns the first occurence of the filename in the directory tree under a given path.
+    If nothing is returned, return value defaults to None.  """
+    for root, dirs, files in os.walk(path):
+        if name in files:
+            return os.path.join(root, name)

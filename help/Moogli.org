@@ -266,7 +266,7 @@
 
 
   [[./page2.html][License]]
-
+  
 * Acknowledgements
 
   Upinder S. Bhalla, Subhasis Ray, Niraj Dudani, Aditya Gilra of NCBS for feedback and encouragment.

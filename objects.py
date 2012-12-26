@@ -57,15 +57,15 @@ class Point(BaseObject):
         Point constructor
         """
         super(Point, self).__init__()
-        #self.name = name
-        #self.drawAs = 'Point'
-        #self.startPos = position
-        #self.dia = 5.0
-	self.data = array(.2*random.randn(100000,3),dtype=float32)
-	self.colordata = array(random.randn(100000,3),dtype=float32)
-	self.count = self.data.shape[0]
-	self.vbo = glvbo.VBO(self.data)
-	self.colorvbo = glvbo.VBO(self.colordata) #this is not even the best method out there, see http://pyopengl.sourceforge.net/context/tutorials/shader_2.xhtml
+        self.name = name
+        self.drawAs = 'Point'
+        self.startPos = position
+        self.dia = 5.0
+	#self.data = array(.2*random.randn(100000,3),dtype=float32)
+	#self.colordata = array(random.randn(100000,3),dtype=float32)
+	#self.count = self.data.shape[0]
+	#self.vbo = glvbo.VBO(self.data)
+	#self.colorvbo = glvbo.VBO(self.colordata) #this is not even the best method out there, see http://pyopengl.sourceforge.net/context/tutorials/shader_2.xhtml
 	
     def render(self):
 	glClear(GL_COLOR_BUFFER_BIT)

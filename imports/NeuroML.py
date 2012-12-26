@@ -10,13 +10,14 @@ from NetworkML import NetworkML
 import string
 import sys
 from os import path
+from neuroml_utils import *
 
 class NeuroML():
 
     def __init__(self):
         pass
 
-    def readNeuroMLFromFile(self,filename):
+    def readNeuroMLFromFile(self,filename,params={}):
         """
         For the format of params required to tweak what cells are loaded,
          refer to the doc string of NetworkML.readNetworkMLFromFile().
@@ -24,27 +25,35 @@ class NeuroML():
          see doc string of NetworkML.readNetworkML() for details.
         """
         print "Loading neuroml file ... ", filename
-
-        neuroml_ns='http://morphml.org/neuroml/schema'
         
         tree = ET.parse(filename)
         root_element = tree.getroot()
-        self.model_dir = path.dirname( path.abspath( filename ) )
-        self.lengthUnits = root_element.attrib['lengthUnits']
-        
+        self.model_dir = path.dirname(path.abspath(filename))
+        try:
+            self.lengthUnits = root_element.attrib['lengthUnits']
+        except:
+            self.lengthUnits = root_element.attrib['length_units']
         self.nml_params = {
                 'model_dir':self.model_dir,
         }
+
+        if root_element.tag.rsplit('}')[1] == 'neuroml':
+            cellTag = neuroml_ns
+        else:
+            cellTag = mml_ns
+
         mmlR = MorphML(self.nml_params)
         self.cellsDict = {}
-        for cells in root_element.findall('.//{'+neuroml_ns+'}cells'):
-            for cell in cells.findall('.//{'+neuroml_ns+'}cell'):
-                cellDict = mmlR.readMorphML(cell,params={},lengthUnits=self.lengthUnits)
+        for cells in root_element.findall('.//{'+cellTag+'}cells'):
+            for cell in cells.findall('.//{'+cellTag+'}cell'):
+                cellDict = mmlR.readMorphML(cell,params={})
                 self.cellsDict.update(cellDict)
 
-        #print "Loading individual cells into MOOSE root ... "
-        nmlR = NetworkML(self.nml_params)
-        return nmlR.readNetworkML(root_element,self.cellsDict,params=params,lengthUnits=self.lengthUnits)
+        if len(self.cellsDict) != 0:
+            return self.cellsDict
+        else:
+            nmlR = NetworkML(self.nml_params)
+            return nmlR.readNetworkML(root_element,self.cellsDict,params=params,lengthUnits=self.lengthUnits)
 
 def loadNeuroML_L123(filename):
     neuromlR = NeuroML()
