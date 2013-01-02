@@ -105,7 +105,7 @@ class DesignerMainWindow(QtGui.QMainWindow,Ui_MainWindow):
             cellDict = neuroml.readNeuroMLFromFile(fileName)
             for ele in cellDict:
                 self.parsedList.append([ele.rsplit('/',1)[0],ele.rsplit('/',1)[1],cellDict[ele]])
-            
+
         elif (self.fileType == 'csv'):
             f = open(fileName,'r')
             testLine = f.readline()
@@ -151,7 +151,7 @@ class DesignerMainWindow(QtGui.QMainWindow,Ui_MainWindow):
             for name in self.dataFile.keys():
                 if (name.find('.xml')!=-1) or (name.find('.nml')!=-1):
                     from imports.MorphML import MorphML
-                    mml = MorphML()
+                    mml = MorphML({})
                     self.parsedList = mml.readMorphMLFromString(str(self.dataFile[name].value[0]))
                 elif (name.find('.csv') != -1):
                     f = open(fileName,'r')
