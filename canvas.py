@@ -60,13 +60,35 @@ class canvas(QGLViewer):
         self.cellComptDict = {}
 
     def draw(self):
+        if DEFAULT_ANAGLYPH:
+            self.camera().loadProjectionMatrixStereo(True)
+            self.camera().loadModelViewMatrixStereo(True)
+            for obj in self.sceneObjects.values():
+                obj.r = 0.0
+                obj.b = 1.0
+            for obj in self.vizObjects.values():#rendering the color changed compartments, rendering twice! ~optimize!
+                obj.r = 0.0
+                obj.b = 1.0 
+            self.draw_scene()
+
+            # Draw for right eye
+            self.camera().loadProjectionMatrixStereo(False)
+            self.camera().loadModelViewMatrixStereo(False)
+            for obj in self.sceneObjects.values():
+                obj.r = 1.0
+                obj.b = 0.0
+            for obj in self.vizObjects.values():#rendering the color changed compartments, rendering twice! ~optimize!
+                obj.r = 1.0
+                obj.b = 0.0 
+            self.draw_scene()
+        else:
+            self.draw_scene()
+
+    def draw_scene(self):
         for obj in self.sceneObjects.values():
             obj.render()
         for obj in self.vizObjects.values():#rendering the color changed compartments, rendering twice! ~optimize!
             obj.render() 
-        self.selectedObjects.render()
- #       if self.__selectionMode != 0:
- #           self.__drawSelectionRectangle()
 
     def postDraw(self):
         QGLViewer.postDraw(self)

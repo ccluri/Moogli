@@ -8,6 +8,7 @@ PATH_ICONS = os.path.join(PATH_MAIN,'icons')
 #1.Canvas Properties
 #1.1 canvas background color
 DEFAULT_BGCOLOR = (1.0,1.0,1.0,1.0) #rgba
+DEFAULT_ANAGLYPH = False
 
 #2.Drawing Properties
 DEFAULT_DRAW = False
