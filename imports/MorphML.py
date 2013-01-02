@@ -4,13 +4,13 @@ import sys, math
 
 class MorphML():
 
-    def __init__(self, nml_params, library={}):
+    def __init__(self, nml_params={}, library={}):
         self.neuroml='http://morphml.org/neuroml/schema'
         self.bio='http://morphml.org/biophysics/schema'
         self.mml='http://morphml.org/morphml/schema'
         self.nml='http://morphml.org/networkml/schema'
-        self.nml_params = nml_params
-        self.model_dir = nml_params['model_dir']
+        #self.nml_params = nml_params
+        #self.model_dir = nml_params['model_dir']
         self.library = library
 
     def readMorphMLFromFile(self,filename,params={}):

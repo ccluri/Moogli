@@ -46,7 +46,7 @@ class NeuroML():
         self.cellsDict = {}
         for cells in root_element.findall('.//{'+cellTag+'}cells'):
             for cell in cells.findall('.//{'+cellTag+'}cell'):
-                cellDict = mmlR.readMorphML(cell,params={})
+                cellDict = mmlR.readMorphML(cell,params={},length_units=self.lengthUnits)
                 self.cellsDict.update(cellDict)
 
         if len(self.cellsDict) != 0:
