@@ -2,34 +2,32 @@ from xml.etree import ElementTree as ET
 import string
 import sys, math
 
-#from ChannelML import *
-#from moose.utils import *
-
 class MorphML():
 
-    def __init__(self):
+    def __init__(self, nml_params, library={}):
         self.neuroml='http://morphml.org/neuroml/schema'
         self.bio='http://morphml.org/biophysics/schema'
         self.mml='http://morphml.org/morphml/schema'
         self.nml='http://morphml.org/networkml/schema'
+        self.nml_params = nml_params
+        self.model_dir = nml_params['model_dir']
+        self.library = library
 
     def readMorphMLFromFile(self,filename,params={}):
         tree = ET.parse(filename)
         neuroml_element = tree.getroot()
-
         if neuroml_element.tag.rsplit('}')[1] == 'neuroml':
             cellTag = self.neuroml
         else:
             cellTag = self.mml
-
-        cellsList = [] #chk name space of root element = neuroml
+        cellsDict = {} #chk name space of root element = neuroml
         for cell in neuroml_element.findall('.//{'+cellTag+'}cell'):
             try:
-                cellList = self.readMorphML(cell,params,neuroml_element.attrib['length_units'])
+                cellDict = self.readMorphML(cell,params,neuroml_element.attrib['length_units'])
             except KeyError:
-                cellList = self.readMorphML(cell,params,neuroml_element.attrib['lengthUnits'])
-            cellsList.extend(cellList)
-        return cellsList
+                cellDict = self.readMorphML(cell,params,neuroml_element.attrib['lengthUnits'])
+            cellsDict.update(cellDict)
+        return cellsDict
 
     def readMorphMLFromString(self,filename,params={}):
         tree = ET.ElementTree(ET.fromstring(filename))
@@ -40,14 +38,14 @@ class MorphML():
         else:
             cellTag = self.mml
 
-        cellsList = [] #chk name space of root element = neuroml
+        cellsDict = {} #chk name space of root element = neuroml
         for cell in neuroml_element.findall('.//{'+cellTag+'}cell'):
             try:
-                cellList = self.readMorphML(cell,params,neuroml_element.attrib['length_units'])
+                cellDict = self.readMorphML(cell,params,neuroml_element.attrib['length_units'])
             except KeyError:
-                cellList = self.readMorphML(cell,params,neuroml_element.attrib['lengthUnits'])
-            cellsList.extend(cellList)
-        return cellsList
+                cellDict = self.readMorphML(cell,params,neuroml_element.attrib['lengthUnits'])
+            cellsDict.update(cellDict)
+        return cellsDict
 
     def readMorphML(self,cell,params={},length_units="micrometer"):
         if length_units in ['micrometer','micron']:
@@ -55,7 +53,7 @@ class MorphML():
         else:
             self.length_factor = 1.0
         cellname = cell.attrib["name"]
-        compartmentList = []
+        compartment_dict = {}
         proximalDict = {}
         #### load morphology and connections between compartments
         for segment in cell.findall(".//{"+self.mml+"}segment"):
@@ -63,7 +61,6 @@ class MorphML():
             segmentname = segment.attrib['name']
             segmentid = segment.attrib['id']
 
-            compartmentList.append([cellname,segmentname])
             if segment.attrib.has_key('parent'):
                 parentid = segment.attrib['parent']
             proximal = segment.find('./{'+self.mml+'}proximal')
@@ -82,8 +79,6 @@ class MorphML():
             z = float(distal.attrib["z"])*self.length_factor
             proximalDict[segmentid] = [x,y,z] #incase child element 
             diameter = float(distal.attrib["diameter"]) * self.length_factor
-
-            currentIndex = len(compartmentList)-1
-            compartmentList[currentIndex].append([x0,y0,z0,x,y,z,diameter]) 
-
-        return compartmentList
+            compartment_dict[cellname+'/'+segmentname] = [x0,y0,z0,x,y,z,diameter]
+        self.library[cellname] = compartment_dict
+        return compartment_dict

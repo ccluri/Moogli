@@ -230,29 +230,30 @@ class cCylinder(BaseObject):
 		"""
 		x1,y1,z1,x2,y2,z2 = self.l_coords[:6]
 		radius = self.l_coords[6]/2
-		subdivisions = 7
+		subdivisions = 5
 		quadric = gluNewQuadric()
 		vx = x2-x1
 		vy = y2-y1
 		vz = z2-z1
 
-		#float ax,rx,ry,rz;
 		length = sqrt( vx*vx + vy*vy + vz*vz )
 
 		glPushMatrix()
 
 		glColor(self.r, self.g, self.b)
-		glRotate(*self.rotation[:4]) 		#get pen to set orientation, in absolute coordinates [0,0,0,0].
-		glTranslate(*self._centralPos[:3])	#if absolute coordinates [0,0,0]
+		glRotate(*self.rotation[:4])
+		glTranslate(*self._centralPos[:3])#if absolute coordinates [0,0,0]
+		#print vz, self.name
 
 		glTranslatef( x1,y1,z1 )
-		if (absolute(vz) < 0.0001):
+		if (absolute(vz) < 0.01):
 			glRotatef(90, 0,1,0)
 			if vx == 0:
+				#ax = 0
 				if vy < 0:
-					ax = 57.2957795
+					ax = 90 #57.2957795
 				else:
-					ax = -57.2957795
+				 	ax = -90 #-57.2957795
 			else:
 				ax = 57.2957795*-arctan( vy / vx )
 			if (vx < 0):
@@ -278,13 +279,14 @@ class cCylinder(BaseObject):
 		gluDisk( quadric, 0.0, radius, subdivisions, 1)
 
 		glTranslatef( 0,0,v )
-		
-		gluQuadricOrientation(quadric,GLU_OUTSIDE)
+
+		gluQuadricOrientation(quadric,GLU_INSIDE)
 		gluDisk( quadric, 0.0, radius, subdivisions, 1)
 
-  		glTranslate(*[i*-1 for i in self._centralPos[:3]])	#bring pen back to origin.
-		glRotate(*[i*-1 for i in self.rotation[:4]])		#bring back to original orientation
+		glTranslate(*[i*-1 for i in self._centralPos[:3]])#bring pen back to origin.
+		glRotate(*[i*-1 for i in self.rotation[:4]])
 		glPopMatrix()
+
 
 class cCapsule(BaseObject):
 	"""

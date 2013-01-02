@@ -31,7 +31,7 @@ class DesignerMainWindow(QtGui.QMainWindow,Ui_MainWindow):
 	self.sizeScale = DEFAULT_SIZE_SCALE #this should do into the canvas.py instead        
         self.fileType = None
 #	self.fileBasedAction([PATH_SAMPLES + '/timeSeries.csv'])
-        self.fileBasedAction([PATH_SAMPLES + '/mitral.h5'])
+        #self.fileBasedAction([PATH_SAMPLES + '/mitral.h5'])
 
     def assignIcons(self):
         self.playButton.setIcon(QtGui.QIcon(os.path.join(PATH_ICONS,'play.png')))
@@ -100,10 +100,12 @@ class DesignerMainWindow(QtGui.QMainWindow,Ui_MainWindow):
         self.parsedList = []
 
         if (self.fileType == 'xml') or (self.fileType =='nml'):
-            from imports.MorphML import MorphML
-            mml = MorphML()
-            self.parsedList = mml.readMorphMLFromFile(fileName)
-
+            from imports.NeuroML import NeuroML
+            neuroml = NeuroML()
+            cellDict = neuroml.readNeuroMLFromFile(fileName)
+            for ele in cellDict:
+                self.parsedList.append([ele.rsplit('/',1)[0],ele.rsplit('/',1)[1],cellDict[ele]])
+            
         elif (self.fileType == 'csv'):
             f = open(fileName,'r')
             testLine = f.readline()
@@ -352,7 +354,7 @@ class DesignerMainWindow(QtGui.QMainWindow,Ui_MainWindow):
         self.connect(self.styleSelectDia.allToolButton,QtCore.SIGNAL('clicked()'),self.addAllToCanvasContentList)
         self.connect(self.styleSelectDia.okayPushButton,QtCore.SIGNAL('clicked()'),self.drawCompartments)
         self.connect(self.styleSelectDia.useDefaultsPushButton,QtCore.SIGNAL('clicked()'),self.defaultDrawCompartments)
-        self.connect(self.styleSelectDia.overrideRadioButton,QtCore.SIGNAL('toggled(bool)'),self.enableArrayDraw)
+#        self.connect(self.styleSelectDia.overrideRadioButton,QtCore.SIGNAL('toggled(bool)'),self.enableArrayDraw)
         
        #reparse parsedlist ?
 
