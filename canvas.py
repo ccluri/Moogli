@@ -26,6 +26,7 @@ import OpenGL.GLUT as oglut #using this only for denoting x,y,z on axis -> recon
 from openGLHeaders.objects import *
 from openGLHeaders.group import *
 from PyQGLViewer import *
+from PyQt4.QtOpenGL import *
 
 from numpy import arange,digitize
 from defaults import *
@@ -35,7 +36,9 @@ class canvas(QGLViewer):
     compartmentSelected = QtCore.pyqtSignal(QtCore.QString)
 
     def __init__(self,parent=None):
-        QGLViewer.__init__(self,parent)
+        format = QGLFormat()
+        format.setStereo(True)
+        QGLViewer.__init__(self,format)
         self.setStateFileName('.MoogliState.xml')
 
         self.selectedObjects = Group(self)
