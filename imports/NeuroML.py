@@ -53,8 +53,8 @@ class NeuroML():
             return self.cellsDict
         else:
             nmlR = NetworkML(self.nml_params)
-            return nmlR.readNetworkML(root_element,self.cellsDict,params=params,lengthUnits=self.lengthUnits)
-
+            return  nmlR.readNetworkML(root_element,self.cellsDict,params=params,lengthUnits=self.lengthUnits)
+        
 def loadNeuroML_L123(filename):
     neuromlR = NeuroML()
     return neuromlR.readNeuroMLFromFile(filename)

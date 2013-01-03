@@ -55,6 +55,7 @@ class NetworkML():
             return self.readNetworkML(root_element,cellSegmentDict,params,root_element.attrib['lengthUnits'])
         except:
             return self.readNetworkML(root_element,cellSegmentDict,params,root_element.attrib['length_units'])
+
     def readNetworkML(self,network,cellSegmentDict,params={},lengthUnits="micrometer"):
         """
         This returns populationDict = { 'populationname1':(cellname,{int(instanceid1):moosecell, ... }) , ... }
@@ -105,7 +106,6 @@ class NetworkML():
                     zrotation = float(string.split(rotationnote.text,'=')[1])
                 else:
                     zrotation = 0
-                
                 x = float(location.attrib['x'])*self.length_factor
                 y = float(location.attrib['y'])*self.length_factor
                 z = float(location.attrib['z'])*self.length_factor

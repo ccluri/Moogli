@@ -9,13 +9,13 @@ PATH_ICONS = os.path.join(PATH_MAIN,'icons')
 #1.1 canvas background color
 DEFAULT_BGCOLOR = (1.0,1.0,1.0,1.0) #rgba
 DEFAULT_ANAGLYPH = False
-
+DEFAULT_SCENE_RADIUS = 10.0
 #2.Drawing Properties
-DEFAULT_DRAW = False
+DEFAULT_DRAW = True
 #True - AutoDraws canvas, draws all compartments in DEFAULT_DRAW_STYLE
 #False - Polite, promts user, to select specific compartments to be drawn in specific styles
 DEFAULT_DRAW_STYLE = 3 #1-Disks,2-Ball&Sticks,3-Cylinders,4-Capsules
-DEFAULT_SIZE_SCALE = 1e+04
+DEFAULT_SIZE_SCALE = 0.5e+04
 
 #3.Visualization Properties
 DEFAULT_VISUALIZE = False
