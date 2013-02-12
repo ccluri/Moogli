@@ -30,18 +30,38 @@ class BaseObject(object):
 		Constructor of the base class. Usually, it should be called in
 		the constructor of the inherited classes.
 		"""
-		self.rgba = np.array((1.0, 0.0, 0.0, 0.0), dtype=float32)
-
+		self.rgb = np.array((1.0, 0.0, 0.0), dtype=float32)
+		self.a = np.array((0.75), dtype=float32)
 		self.name = None
-		self.draw_as = None
-
+		self.drawn_as = None
+		self.color = None
+		self.data = None
 		self.start_pos = None
 		self.end_pos = None
 		self.dia = None
-
 		self.subdivisions = 10
-	def getName(self):
+
+	def get_name(self):
 		return self.name
+
+	def get_drawn_as(self):
+		return self.drawn_as
+
+	def update_rbga(self, rgba):
+		self.rgb = rgba[:3]
+		self.a = rgba[3]
+		self.color = rgba
+
+	def update_rgb(self, rgb):
+		self.rgb = rgb
+		self.update_color()
+		
+	def update_a(self, a):
+		self.a = a
+		self.update_color()
+
+	def update_color(self):
+		self.color = np.hstack((self.rgb, self.a))
 
 	def render(self):
 		pass
@@ -50,16 +70,16 @@ class Point(BaseObject):
 	"""
 	Class that defines a point
 	"""
-	def __init__(self, name, position, dia=1.0):
+	def __init__(self, name, position):
 		"""
 		Point constructor
 		"""
 		super(Point, self).__init__()
 		self.name = name
-		self.draw_as = 'Point'
-		self.dia = dia
+		self.drawn_as = 'Point'
 		self.start_pos = np.array(position, dtype=np.float32)
-		self.data = np.hstack((self.start_pos, self.rgba))
+		self.data = np.hstack((self.start_pos))
+		self.color = np.hstack((self.rgb, self.a))
 
 class Sphere(BaseObject):
 	"""

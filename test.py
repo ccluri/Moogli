@@ -8,8 +8,7 @@ def main(filename):
 
     window = Moogli()
     for name in point_pos_dict:
-        window.canvas.place_object(name, point_pos_dict[name])
-
+        window.canvas.place_point(name, point_pos_dict[name])
     window.show()
 
 main('pointPosDict.pkl')

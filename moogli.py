@@ -13,7 +13,8 @@ def Moogli():
             self.canvas = self.window.canvas
 
         def show(self):
-            self.canvas.refresh_canvas()
+            #self.canvas.refresh_canvas()
+            self.canvas.create_object_buffers()
             self.window.show()
             sys.exit(self.exec_())
 

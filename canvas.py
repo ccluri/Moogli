@@ -31,8 +31,7 @@ class GLCanvas(QGLViewer):
         self.setStateFileName('.MoogliState.xml')
         self.scale = 'micro'
         #self.neuro = Neuroey()
-        
-        #self.points_data = np.array((0, 0, 0, 0, 0, 0, 0), dtype=np.float32)
+        self.points_dict = {}
         self.lines_data = np.array((), dtype=np.float32)
         self.triangles_data = np.array((), dtype=np.float32)
 
@@ -41,23 +40,27 @@ class GLCanvas(QGLViewer):
         self.setBackgroundColor(QtGui.QColor(255, 255, 255, 255))
         self.setSceneRadius(10.0)
 
-    def place_object(self, name, start_pos, dia=1.0, draw_as='Point'):
-        if draw_as == 'Point':
-            #cmpt = Point(name, position=(np.array(start_pos, dtype=float32)+np.array(end_pos,dtype=float32))/2, dia)
-            cmpt = Point(name, position=np.array((start_pos), dtype=float32)/100.0, dia=dia)
-            try:
-                self.points_data = np.vstack((self.points_data, cmpt.data))
-            except AttributeError:
-                self.points_data = np.array((cmpt.data))
-        #print self.points_data[:,:3]
-    
-    def refresh_canvas(self):
-        self.vbo_points = glvbo.VBO(self.points_data)
+    def place_point(self, name, start_pos, dia=1.0):
+        #cmpt = Point(name, position=(np.array(start_pos, dtype=float32)+np.array(end_pos,dtype=float32))/2, dia)
+        cmpt = Point(name, position=np.array((start_pos), dtype=float32)/1000.0)
+        if not self.points_dict.has_key(cmpt.name):
+            self.points_dict[cmpt.name] = cmpt
+        else:
+            print 'Point with name: ',cmpt.name,' already exists - use unique name'
+            return
+        try:
+            self.points_data = np.vstack((self.points_data, cmpt.data))
+            self.points_color = np.vstack((self.points_color, cmpt.color))
+            self.points_names.append(cmpt.name)
+        except AttributeError:
+            self.points_data = np.array((cmpt.data))
+            self.points_color = np.array((cmpt.color))
+            self.points_names = [cmpt.name]
 
+    def create_object_buffers(self):
+        self.vbo_points_data = glvbo.VBO(self.points_data)
+        self.vbo_points_color = glvbo.VBO(self.points_color) 
         self.points_count = self.points_data.shape[0]
-        print self.points_count, 'Points'
-        self.lines_count = self.lines_data.shape[0]
-        self.triangles_count = self.triangles_data.shape[0]
 
     def read_file(self,filename):
         f = FileHandler(filename)
@@ -67,11 +70,17 @@ class GLCanvas(QGLViewer):
         
     def draw(self):
         glClear(GL_COLOR_BUFFER_BIT)
-        self.vbo_points.bind()
+        self.vbo_points_data.bind()
 	glEnableClientState(GL_VERTEX_ARRAY)
+	glVertexPointer(3, GL_FLOAT, 0, self.vbo_points_data)
+        self.vbo_points_color.bind()
 	glEnableClientState(GL_COLOR_ARRAY)
-	glVertexPointer(3, GL_FLOAT, 28, self.vbo_points)
-	glColorPointer(4, GL_FLOAT, 28, self.vbo_points+12)
+	glColorPointer(4, GL_FLOAT, 0, self.vbo_points_color)
+        glPointSize(2.0)
+        glEnable(GL_BLEND)
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 	glDrawArrays(GL_POINTS, 0, self.points_count)
-        self.vbo_points.unbind()
+        glDisable(GL_BLEND)
+        self.vbo_points_data.unbind()
+        self.vbo_points_color.unbind()
         #this is not even the best method out there, see http://pyopengl.sourceforge.net/context/tutorials/shader_2.xhtml
