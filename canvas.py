@@ -32,13 +32,12 @@ class GLCanvas(QGLViewer):
         self.scale = 'micro'
         #self.neuro = Neuroey()
         self.points_dict = {}
-        self.lines_data = np.array((), dtype=np.float32)
-        self.triangles_data = np.array((), dtype=np.float32)
 
     def init(self):
         self.restoreStateFromFile()
         self.setBackgroundColor(QtGui.QColor(255, 255, 255, 255))
         self.setSceneRadius(10.0)
+        self.setAnimationPeriod(100)
 
     def place_point(self, name, start_pos, dia=1.0):
         #cmpt = Point(name, position=(np.array(start_pos, dtype=float32)+np.array(end_pos,dtype=float32))/2, dia)
@@ -67,7 +66,11 @@ class GLCanvas(QGLViewer):
         if f.kind == 'neuroey':
             self.scale = 'micro'
             return f.parsed_list_dict
-        
+
+    def animate(self):
+        self.points_color = np.random.rand(369, 4)
+        self.vbo_points_color.set_array(self.points_color)
+
     def draw(self):
         glClear(GL_COLOR_BUFFER_BIT)
         self.vbo_points_data.bind()
