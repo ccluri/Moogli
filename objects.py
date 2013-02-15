@@ -31,7 +31,7 @@ class BaseObject(object):
 		the constructor of the inherited classes.
 		"""
 		self.rgb = np.array((1.0, 0.0, 0.0), dtype=float32)
-		self.a = np.array((0.75), dtype=float32)
+		self.a = np.array((1.0), dtype=float32)
 		self.name = None
 		self.drawn_as = None
 		self.color = None
@@ -77,8 +77,22 @@ class Point(BaseObject):
 		super(Point, self).__init__()
 		self.name = name
 		self.drawn_as = 'Point'
-		self.start_pos = np.array(position, dtype=np.float32)
-		self.data = np.hstack((self.start_pos))
+		self.data = np.array(position, dtype=np.float32)
+		self.color = np.hstack((self.rgb, self.a))
+
+class Line(BaseObject):
+	"""
+	Class that defines a compartment as a simple line.
+	"""
+
+	def __init__(self, name, start_pos, end_pos):
+		"""
+		Constructor. usecase: Line(name='Axon1',start_pos=[0.0,0.0,0.0], end_pos=[1.0,0.0,0.0])
+		"""
+		super(Line, self).__init__()
+		self.name = name
+		self.draw_as = 'Line'
+		self.data = np.array((start_pos, end_pos), dtype=np.float32)
 		self.color = np.hstack((self.rgb, self.a))
 
 class Sphere(BaseObject):
@@ -138,37 +152,6 @@ class Disk(BaseObject):
 		glTranslate(*[i*-1 for i in self.start_pos[:3]])
 		glPopMatrix()
 
-class Line(BaseObject):
-	"""
-	Class that defines a compartment as a simple line.
-	"""
-
-	def __init__(self, name, start_pos, end_pos, dia=2):
-		"""
-		Constructor. usecase: Line(name='Axon1',start_pos=[0.0,0.0,0.0], end_pos=[1.0,0.0,0.0])
-		"""
-		super(Line, self).__init__()
-		self.name = name
-		self.draw_as = 'Line'
-		self.start_pos = start_pos
-		self.end_pos = end_pos
-		self.dia = 2
-
-	def render(self):
-		"""
-		Renders the compartment line.
-		"""
-		glPushMatrix()
-		glColor(self.r, self.g, self.b, self.a)
-
-		glLineWidth(self.dia)
-		glDisable(GL_LIGHTING)
-		glBegin(GL_LINES)
-		glVertex3f(self.start_pos[0],self.start_pos[1],self.start_pos[2])
-		glVertex3f(self.end_pos[0],self.end_pos[1],self.end_pos[2])
-		glEnd()		
-		glEnable(GL_LIGHTING)
-		glPopMatrix()	
 
 
 class Cylinder(BaseObject):

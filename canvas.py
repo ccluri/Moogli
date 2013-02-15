@@ -31,35 +31,59 @@ class GLCanvas(QGLViewer):
         self.setStateFileName('.MoogliState.xml')
         self.scale = 'micro'
         #self.neuro = Neuroey()
-        self.points_dict = {}
-
+        self.objt_dict = {}
+        self.points_names = []
+        self.lines_names = []
+        
     def init(self):
         self.restoreStateFromFile()
+        glDisable(GL_LIGHTING)
         self.setBackgroundColor(QtGui.QColor(255, 255, 255, 255))
         self.setSceneRadius(10.0)
         self.setAnimationPeriod(100)
 
-    def place_point(self, name, start_pos, dia=1.0):
-        #cmpt = Point(name, position=(np.array(start_pos, dtype=float32)+np.array(end_pos,dtype=float32))/2, dia)
-        cmpt = Point(name, position=np.array((start_pos), dtype=float32)/1000.0)
-        if not self.points_dict.has_key(cmpt.name):
-            self.points_dict[cmpt.name] = cmpt
+    def place_line(self, name, start_pos, end_pos):
+        objt = Line(name, start_pos=np.array((start_pos), dtype=np.float32)/1000.0,
+                    end_pos=np.array((end_pos), dtype=np.float32)/1000.0)
+        if not self.objt_dict.has_key(objt.name):
+            self.objt_dict[objt.name] = objt
         else:
-            print 'Point with name: ',cmpt.name,' already exists - use unique name'
+            print 'Point with name: ',objt.name,' already exists - use unique name'
             return
         try:
-            self.points_data = np.vstack((self.points_data, cmpt.data))
-            self.points_color = np.vstack((self.points_color, cmpt.color))
-            self.points_names.append(cmpt.name)
+            self.lines_data = np.vstack((self.lines_data, objt.data))
+            self.lines_color = np.vstack((self.lines_color, objt.color))
+            self.lines_names.append(objt.name)
         except AttributeError:
-            self.points_data = np.array((cmpt.data))
-            self.points_color = np.array((cmpt.color))
-            self.points_names = [cmpt.name]
+            self.lines_data = np.array((objt.data))
+            self.lines_color = np.array((objt.color))
+            self.lines_names = [objt.name]
+
+    def place_point(self, name, start_pos):
+        objt = Point(name, position=np.array((start_pos), dtype=np.float32)/1000.0)
+        if not self.objt_dict.has_key(objt.name):
+            self.objt_dict[objt.name] = objt
+        else:
+            print 'Point with name: ',objt.name,' already exists - use unique name'
+            return
+        try:
+            self.points_data = np.vstack((self.points_data, objt.data))
+            self.points_color = np.vstack((self.points_color, objt.color))
+            self.points_names.append(objt.name)
+        except AttributeError:
+            self.points_data = np.array((objt.data))
+            self.points_color = np.array((objt.color))
+            self.points_names = [objt.name]
 
     def create_object_buffers(self):
-        self.vbo_points_data = glvbo.VBO(self.points_data)
-        self.vbo_points_color = glvbo.VBO(self.points_color) 
-        self.points_count = self.points_data.shape[0]
+        if self.points_names:
+            self.vbo_points_data = glvbo.VBO(self.points_data)
+            self.vbo_points_color = glvbo.VBO(self.points_color)
+            self.points_count = self.points_data.shape[0]
+        if self.lines_names:
+            self.vbo_lines_data = glvbo.VBO(self.lines_data)
+            self.vbo_lines_color = glvbo.VBO(self.lines_color)
+            self.lines_count = self.lines_data.shape[0]
 
     def read_file(self,filename):
         f = FileHandler(filename)
@@ -73,17 +97,28 @@ class GLCanvas(QGLViewer):
 
     def draw(self):
         glClear(GL_COLOR_BUFFER_BIT)
-        self.vbo_points_data.bind()
-	glEnableClientState(GL_VERTEX_ARRAY)
-	glVertexPointer(3, GL_FLOAT, 0, self.vbo_points_data)
-        self.vbo_points_color.bind()
-	glEnableClientState(GL_COLOR_ARRAY)
-	glColorPointer(4, GL_FLOAT, 0, self.vbo_points_color)
-        glPointSize(2.0)
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-	glDrawArrays(GL_POINTS, 0, self.points_count)
+        if self.points_count:
+            self.vbo_points_data.bind()
+            glEnableClientState(GL_VERTEX_ARRAY)
+            glVertexPointer(3, GL_FLOAT, 0, self.vbo_points_data)
+            self.vbo_points_color.bind()
+            glEnableClientState(GL_COLOR_ARRAY)
+            glColorPointer(4, GL_FLOAT, 0, self.vbo_points_color)
+            glPointSize(2.0)
+            glDrawArrays(GL_POINTS, 0, self.points_count)
+            self.vbo_points_data.unbind()
+            self.vbo_points_color.unbind()
+        if self.lines_count:
+            self.vbo_lines_data.bind()
+            glEnableClientState(GL_VERTEX_ARRAY)
+            glVertexPointer(3, GL_FLOAT, 0, self.vbo_lines_data)
+            self.vbo_lines_color.bind()
+            glEnableClientState(GL_COLOR_ARRAY)
+            glColorPointer(4, GL_FLOAT, 0, self.vbo_lines_color)
+            glDrawArrays(GL_LINES, 0, self.lines_count)
+            self.vbo_lines_data.unbind()
+            self.vbo_lines_color.unbind()
         glDisable(GL_BLEND)
-        self.vbo_points_data.unbind()
-        self.vbo_points_color.unbind()
         #this is not even the best method out there, see http://pyopengl.sourceforge.net/context/tutorials/shader_2.xhtml
