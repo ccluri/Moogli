@@ -9,11 +9,16 @@ import numpy as np
 
 class FileHandler():
 
-    def __init__(self, filename):
+    def __init__(self):
+        self.filename = None
+        self.filetype = None
+        self.kind = None
+        self.parsed_dict = {}
+
+    def process_file(self, filename):
         self.filename, self.filetype = filename.rsplit('.',1) #what happens when path is passed?
         self.kind = 'neuroey' #all modules currently are neuroey
-        self.parsed_dict = {}
-        self.categorize(filename)
+        return self.categorize(filename)
         
     def categorize(self, filename):
         if (self.filetype == 'xml') or (self.filetype =='nml'):
@@ -59,7 +64,9 @@ class FileHandler():
         #             f.close()
         else:
             print 'Not a supported Format yet*'
+        return self.parsed_dict
 
 if __name__ == '__main__':
-    f = FileHandler('./samples/purk2.morph.xml')
+    f = FileHandler()
+    print f.process_file('./samples/purk2.morph.xml')
     

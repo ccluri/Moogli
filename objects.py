@@ -94,7 +94,8 @@ class Line(BaseObject):
 		self.draw_as = 'Line'
 		self.data = np.array((start_pos, end_pos), dtype=np.float32)
 		self.color = np.hstack((self.rgb, self.a))
-
+		self.color = np.vstack((self.color, self.color))
+		
 class Sphere(BaseObject):
 	"""
 	Class that defines a compartment as a sphere.

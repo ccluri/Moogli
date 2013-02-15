@@ -34,6 +34,8 @@ class GLCanvas(QGLViewer):
         self.objt_dict = {}
         self.points_names = []
         self.lines_names = []
+        self.points_count = 0
+        self.lines_count = 0
         
     def init(self):
         self.restoreStateFromFile()
@@ -43,8 +45,8 @@ class GLCanvas(QGLViewer):
         self.setAnimationPeriod(100)
 
     def place_line(self, name, start_pos, end_pos):
-        objt = Line(name, start_pos=np.array((start_pos), dtype=np.float32)/1000.0,
-                    end_pos=np.array((end_pos), dtype=np.float32)/1000.0)
+        objt = Line(name, start_pos=np.array((start_pos), dtype=np.float32)*1e4,
+                    end_pos=np.array((end_pos), dtype=np.float32)*1e4)
         if not self.objt_dict.has_key(objt.name):
             self.objt_dict[objt.name] = objt
         else:
@@ -84,6 +86,7 @@ class GLCanvas(QGLViewer):
             self.vbo_lines_data = glvbo.VBO(self.lines_data)
             self.vbo_lines_color = glvbo.VBO(self.lines_color)
             self.lines_count = self.lines_data.shape[0]
+        print self.lines_count
 
     def read_file(self,filename):
         f = FileHandler(filename)
@@ -92,8 +95,8 @@ class GLCanvas(QGLViewer):
             return f.parsed_list_dict
 
     def animate(self):
-        self.points_color = np.random.rand(369, 4)
-        self.vbo_points_color.set_array(self.points_color)
+        self.points_color = np.random.rand(3200, 4)
+        self.vbo_lines_color.set_array(self.points_color)
 
     def draw(self):
         glClear(GL_COLOR_BUFFER_BIT)
