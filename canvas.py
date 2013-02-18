@@ -34,15 +34,37 @@ class GLCanvas(QGLViewer):
         self.objt_dict = {}
         self.points_names = []
         self.lines_names = []
+        self.cylinders_names = []
+
         self.points_count = 0
         self.lines_count = 0
+        self.triangles_count = 0
         
     def init(self):
         self.restoreStateFromFile()
-        glDisable(GL_LIGHTING)
+        #glDisable(GL_LIGHTING)
         self.setBackgroundColor(QtGui.QColor(255, 255, 255, 255))
         self.setSceneRadius(10.0)
         self.setAnimationPeriod(100)
+
+    def place_cylinder(self, name, start_pos, end_pos, dia):
+        objt = Cylinder(name, start_pos=np.array((start_pos), dtype=np.float32),
+                    end_pos=np.array((end_pos), dtype=np.float32), dia=dia)
+        if not self.objt_dict.has_key(objt.name):
+            self.objt_dict[objt.name] = objt
+        else:
+            print 'Cylinder with name: ',objt.name,' already exists - use unique name'
+            return
+        try:
+            self.triangles_data = np.vstack((self.triangles_data, objt.data))
+            self.triangles_index = np.hstack((self.triangles_index, objt.index+len(self.triangles_index)))
+            self.triangles_color = np.vstack((self.triangles_color, objt.color))
+            self.cylinders_names.append(objt.name)
+        except AttributeError:
+            self.triangles_data = np.array(objt.data, dtype=np.float32)
+            self.triangles_index = np.array(objt.index, dtype=np.ubyte)
+            self.triangles_color = np.array(objt.color, dtype=np.float32)
+            self.cylinders_names = [objt.name]
 
     def place_line(self, name, start_pos, end_pos):
         objt = Line(name, start_pos=np.array((start_pos), dtype=np.float32)*1e4,
@@ -86,22 +108,28 @@ class GLCanvas(QGLViewer):
             self.vbo_lines_data = glvbo.VBO(self.lines_data)
             self.vbo_lines_color = glvbo.VBO(self.lines_color)
             self.lines_count = self.lines_data.shape[0]
-        print self.lines_count
-
+        if self.cylinders_names:
+            self.vbo_triangles_data = glvbo.VBO(self.triangles_data)
+            self.vbo_triangles_index = glvbo.VBO(self.triangles_index, target=GL_ELEMENT_ARRAY_BUFFER)
+            self.vbo_triangles_color = glvbo.VBO(self.triangles_color)
+            self.triangles_count = len(self.triangles_index)
+        #print self.triangles_count, ' numer of triangles indices'
+        #print len(self.triangles_data), 'number of vertices'
+        #print self.triangles_color
     def read_file(self,filename):
         f = FileHandler(filename)
         if f.kind == 'neuroey':
             self.scale = 'micro'
             return f.parsed_list_dict
 
-    def animate(self):
-        self.points_color = np.random.rand(3200, 4)
-        self.vbo_lines_color.set_array(self.points_color)
+#    def animate(self):
+#        self.triangles_color = np.random.rand(120, 4)
+#        self.vbo_triangles_color.set_array(self.triangles_color)
 
     def draw(self):
         glClear(GL_COLOR_BUFFER_BIT)
-        glEnable(GL_BLEND)
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+#        glEnable(GL_BLEND)
+#        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
         if self.points_count:
             self.vbo_points_data.bind()
             glEnableClientState(GL_VERTEX_ARRAY)
@@ -123,5 +151,17 @@ class GLCanvas(QGLViewer):
             glDrawArrays(GL_LINES, 0, self.lines_count)
             self.vbo_lines_data.unbind()
             self.vbo_lines_color.unbind()
-        glDisable(GL_BLEND)
+        if self.triangles_count:
+            self.vbo_triangles_data.bind()
+            glEnableClientState(GL_VERTEX_ARRAY)
+            glVertexPointer(3, GL_FLOAT, 0, self.vbo_triangles_data)
+            self.vbo_triangles_color.bind()
+            glEnableClientState(GL_COLOR_ARRAY)
+            glColorPointer(4, GL_FLOAT, 0, self.vbo_triangles_color)
+            self.vbo_triangles_index.bind()
+            glDrawElements(GL_TRIANGLES, self.triangles_count, GL_UNSIGNED_BYTE, self.vbo_triangles_index)
+            self.vbo_triangles_data.unbind()
+            self.vbo_triangles_index.unbind()
+            self.vbo_triangles_color.unbind()
+#        glDisable(GL_BLEND)
         #this is not even the best method out there, see http://pyopengl.sourceforge.net/context/tutorials/shader_2.xhtml
