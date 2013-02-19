@@ -39,6 +39,10 @@ class GLCanvas(QGLViewer):
         self.points_count = 0
         self.lines_count = 0
         self.triangles_count = 0
+
+        self.t_point = 0
+        self.t_line = 0
+        self.t_triangle = 0
         
     def init(self):
         self.restoreStateFromFile()
@@ -122,9 +126,57 @@ class GLCanvas(QGLViewer):
             self.scale = 'micro'
             return f.parsed_list_dict
 
-#    def animate(self):
-#        self.triangles_color = np.random.rand(120, 4)
-#        self.vbo_triangles_color.set_array(self.triangles_color)
+    def update_colors(self, objts, colors):
+        for ii,objt in enumerate(objts):
+            if objt in self.points_names:
+                self.points_color[self.points_names.index(objt)] = colors[ii]
+                self.t_point = 1
+            elif objt in self.lines_names:
+                line_index = self.lines_names.index(objt)
+                self.lines_color[lines_index:lines_index+2] = colors[ii]
+                self.t_line = 1
+            elif objt in self.cylinders_names:
+                cyl_index = self.cylinders_names.index(objt)
+                self.triangles_color[cyl_index:cyl_index+23] = colors[ii]
+                self.t_triangle = 1
+            else:
+                print objt, 'is not on canvas - cannot update its newcolor'
+
+    def update_points_colors(self, objts, colors):
+        try:
+            for ii,objt in enumerate(objts):
+                self.points_color[self.points_names.index(objt)] = colors[ii]
+                self.t_point = 1
+        except ValueError:
+            print objt, 'is not a point on canvas'
+            
+    def update_lines_colors(self, objts, colors):
+        try:
+            for ii,objt in enumerate(objts):
+                line_index = self.lines_names.index(objt)
+                self.lines_color[lines_index:lines_index+2] = colors[ii]
+                self.t_line = 1
+        except ValueError:
+            print objt, 'is not a line on canvas'
+            
+    def update_cylinders_colors(self, objts, colors):
+        try:
+            for ii,objt in enumerate(objts):
+                cyl_index = self.cylinders_names.index(objt)
+                self.triangles_color[cyl_index:cyl_index+23] = colors[ii]
+                self.t_triangle = 1
+        except:
+            print objt, 'is not a cylinder on canvas'
+
+    def animate(self):
+        self.update_colors(['lest'],[np.float32(np.random.rand(4))])
+        if self.t_point:
+            self.vbo_points_color.set_array(self.points_color)
+        if self.t_line:
+            self.vbo_lines_color.set_array(self.lines_color)
+        if self.t_triangle:
+            self.vbo_triangles_color.set_array(self.triangles_color)
+        self.t_point, self.t_line, self.t_triangle = 0, 0, 0
 
     def draw(self):
         glClear(GL_COLOR_BUFFER_BIT)

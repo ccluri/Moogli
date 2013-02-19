@@ -1,7 +1,8 @@
 from moogli import Moogli
 from filehandler import FileHandler
 import pickle as pkl
-
+import time
+import numpy as np
 def main(filename):
     #f = open(filename, 'r')
     #point_pos_dict = pkl.load(f)
