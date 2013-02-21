@@ -123,22 +123,35 @@ class Cylinder(BaseObject):
 
 	def generate_cylinder(self):
 		r = self.dia / 2.0
-		height = np.linalg.norm(self.start_pos - self.end_pos) #dist bet. points
-		z_angle = np.arccos((self.end_pos[2] - self.start_pos[2]) / height)
-		xy_plane_proj = np.linalg.norm(self.start_pos[:2] - self.end_pos[:2])
-		if xy_plane_proj == 0:
-			x_angle = 0.0
+		P1 = self.start_pos
+		P2 = self.end_pos
+		#height = np.linalg.norm(P2 - P1) #dist between points
+		L = P2 - P1 #vector in dir of cylinder
+		N = L / np.linalg.norm(L) #dir of plane normal
+		#Eq of plane
+		#L[0](x)+L[1](y)+L[2](z) = L[0]*P1[0]+L[1]*P1[1]+L[2]*P1[2]
+		#A pt on plane above
+		dum_num = [1.00001,2.80] #np.random.rand(2,1)
+		if L[0] != 0.0: #if the x intersect is non zero.
+			P = np.array(((np.dot(L,P1) -L[1]*dum_num[0] -L[2]*dum_num[1]) / L[0], dum_num[0], dum_num[1]), dtype=np.float32)
+		elif L[1] != 0.0:
+			P = np.array((dum_num[0], (np.dot(L,P1) -L[0]*dum_num[0] -L[2]*dum_num[1]) / L[1], dum_num[1]), dtype=np.float32)
+		elif L[2] != 0.0:
+			P = np.array((dum_num[0], dum_num[1], (np.dot(L,P1) -L[0]*dum_num[0] -L[1]*dum_num[1]) / L[2]), dtype=np.float32)
 		else:
-			x_angle = np.arccos((self.end_pos[0] - self.start_pos[0]) / xy_plane_proj)
-		#print height,np.rad2deg(z_angle),np.rad2deg(x_angle)
+			print 'Cannot draw a zero length cylinder'
+		U = (P1 - P) / np.linalg.norm(P1 - P) #unit vector in plane
+		V = np.cross(U, N) #second orthonormal vector
+		V = V / np.linalg.norm(V)
 		subdiv = self.subdivisions
 		angle = 360.0 / subdiv
-		points = [np.hstack((0.0,0.0,0.0)), np.hstack((0.0,0.0,height))]
-		for ang_down in np.arange(0.0, 360.0, angle):
-			ang_top = ang_down #convenience 
-			points.append(np.hstack((self.vertex(r, ang_down), 0.0)))
-			points.append(np.hstack((self.vertex(r, ang_top), height)))
-			nump = np.array(np.vstack(points), dtype=np.float32)
+		points = [P1, P2]
+		for angle_down in np.arange(0.0, 360.0, angle):
+			ang_down = np.radians(angle_down)
+			bot_pt = P1 + r*np.sin(ang_down)*U + r*np.cos(ang_down)*V
+			points.append(bot_pt)
+			points.append(bot_pt + L)
+		nump = np.array(np.vstack(points), dtype=np.float32)
 		indx = []
 		for ii in range(2, 22, 2):
 			point_1 = ii

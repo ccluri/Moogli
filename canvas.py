@@ -60,9 +60,13 @@ class GLCanvas(QGLViewer):
             print 'Cylinder with name: ',objt.name,' already exists - use unique name'
             return
         try:
-            self.triangles_data = np.vstack((self.triangles_data, objt.data))
-            self.triangles_index = np.hstack((self.triangles_index, objt.index+len(self.triangles_index)))
-            self.triangles_color = np.vstack((self.triangles_color, objt.color))
+            existing_count = np.ubyte(len(self.triangles_data))
+        except AttributeError:
+            pass
+        try:
+            self.triangles_data = np.vstack((self.triangles_data, np.float32(objt.data)))
+            self.triangles_index = np.hstack((self.triangles_index, objt.index + existing_count))
+            self.triangles_color = np.vstack((self.triangles_color, np.float32(objt.color)))
             self.cylinders_names.append(objt.name)
         except AttributeError:
             self.triangles_data = np.array(objt.data, dtype=np.float32)
@@ -137,7 +141,7 @@ class GLCanvas(QGLViewer):
                 self.t_line = 1
             elif objt in self.cylinders_names:
                 cyl_index = self.cylinders_names.index(objt)
-                self.triangles_color[cyl_index:cyl_index+23] = colors[ii]
+                self.triangles_color[cyl_index:cyl_index+22] = colors[ii]
                 self.t_triangle = 1
             else:
                 print objt, 'is not on canvas - cannot update its newcolor'
@@ -169,7 +173,7 @@ class GLCanvas(QGLViewer):
             print objt, 'is not a cylinder on canvas'
 
     def animate(self):
-        self.update_colors(['lest'],[np.float32(np.random.rand(4))])
+        self.update_colors(['Z_axis'],[np.float32(np.random.rand(4))])
         if self.t_point:
             self.vbo_points_color.set_array(self.points_color)
         if self.t_line:
