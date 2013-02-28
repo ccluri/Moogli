@@ -133,7 +133,7 @@ class Cylinder(BaseObject):
 		#A pt on plane above
 		dum_num = [1.00001,2.80] #np.random.rand(2,1)
 		if L[0] != 0.0: #if the x intersect is non zero.
-			P = np.array(((np.dot(L,P1) -L[1]*dum_num[0] -L[2]*dum_num[1]) / L[0], dum_num[0], dum_num[1]), dtype=np.float32)
+ 			P = np.array(((np.dot(L,P1) -L[1]*dum_num[0] -L[2]*dum_num[1]) / L[0], dum_num[0], dum_num[1]), dtype=np.float32)
 		elif L[1] != 0.0:
 			P = np.array((dum_num[0], (np.dot(L,P1) -L[0]*dum_num[0] -L[2]*dum_num[1]) / L[1], dum_num[1]), dtype=np.float32)
 		elif L[2] != 0.0:

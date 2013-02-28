@@ -1,5 +1,7 @@
 from PyQt4 import Qt,QtGui,QtCore
 from canvas import GLCanvas
+from neuroey impoert Neuroey
+from filehandler import FileHandler
 import sys
 
 def Moogli():
@@ -10,7 +12,22 @@ def Moogli():
         def __init__(self, args):
             QtGui.QApplication.__init__(self,args)
             self.window = GLWindow()
+            self.neuroey = Neuroey()
             self.canvas = self.window.canvas
+            self.filehandler = None
+            self.parsed_dict = {}
+
+        def add_items(self, parsed_dict):
+            self.parsed_dict.update(parsed_dict)
+
+        def read_file(self, filepath):
+            self.filehandler = FileHandler(filepath)
+            self.parsed_dict = self.filehandler.get_values()
+
+        def draw_as(self, shape, items=None):
+            if items == None:
+                items = self.parsed_dict
+            
 
         def show(self):
             #self.canvas.refresh_canvas()
@@ -47,6 +64,7 @@ def Moogli():
             self.verticalLayout.addWidget(self.canvas)
             MainWindow.setCentralWidget(self.centralwidget)
             MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", self.name, None, QtGui.QApplication.UnicodeUTF8))
+
     return GLApp(sys.argv)
 
 if __name__ == "__main__":

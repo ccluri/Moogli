@@ -1,43 +1,46 @@
 import numpy as np
 
 ''' Handles everything that is to do with the input file.
-    Called via canvas and returned to canvas for further action.
-    Should return the kind of visualization "neuroey" or else.
-    Should return the scale of the visualization um or what?
+    get_values returns a dict of values
+    Contains the scale of the visualization.
     Should return list of items comprehensible by canvas (via neuroey)
 '''
 
 class FileHandler():
 
-    def __init__(self):
-        self.filename = None
-        self.filetype = None
-        self.kind = None
-        self.parsed_dict = {}
+    def __init__(self, filepath):
+        self.filepath = filepath
+        #self.filename = filepath.rsplit('.',1)[0]
+        self.filetype = filepath.rsplit('.',1)[1]
+        self.categorize()
 
-    def process_file(self, filename):
-        self.filename, self.filetype = filename.rsplit('.',1) #what happens when path is passed?
-        self.kind = 'neuroey' #all modules currently are neuroey
-        return self.categorize(filename)
+    def categorize(self):
+        '''categorize based on self.filetype'''
+        self.kind = 'neuroey' #all are neuroey at present
+        self.scale = 'micro' #for neuroey - default
         
-    def categorize(self, filename):
+    def get_values(self):
         if (self.filetype == 'xml') or (self.filetype =='nml'):
             from imports.NeuroML import NeuroML
-            neuroml = NeuroML()#('model_dir':filename.rsplit('/',1)[0]}) 
-            self.parsed_dict = neuroml.readNeuroMLFromFile(filename)
-
+            neuroml = NeuroML()
+            parsed_dict = neuroml.readNeuroMLFromFile(self.filepath)
         elif (self.filetype == 'csv'):
             import csv
-            f = open(filename, 'r')
+            print "In CSV format,all values are assumed to be in micro mts"
+            f = open(self.filepath, 'r')
             test_line = f.readline()
             dialect = csv.Sniffer().sniff(test_line) #to get the format of the csv
             f.close()
-            f = open(filename, 'r')
+            f = open(self.filepath, 'r')
             reader = csv.reader(f, dialect)
             for row in reader:
-                self.parsed_dict[row[0]+'/'+row[1]] = [np.float32(i) for i in row[2:9]]
+                parsed_dict[row[0]+'/'+row[1]] = [np.float32(i) for i in row[2:9]]
             f.close()
-           
+        else:
+            print 'Not a supported Format yet*'
+            parsed_dict = {}
+
+        return parsed_dict
         # elif (self.filetype == 'h5') or (self.filetype == 'hdf5'):
         #     self.filetype = 'h5'
         #     try: 
@@ -62,11 +65,8 @@ class FileHandler():
         #             for row in reader:
         #                 self.parsedList.append([row[0],row[1],[float(i)*1e-6 for i in row[2:9]]])
         #             f.close()
-        else:
-            print 'Not a supported Format yet*'
-        return self.parsed_dict
 
 if __name__ == '__main__':
-    f = FileHandler()
-    print f.process_file('./samples/purk2.morph.xml')
+    f = FileHandler('./samples/purk2.morph.xml')
+    print f.get_values()
     

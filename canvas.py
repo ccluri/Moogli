@@ -124,11 +124,6 @@ class GLCanvas(QGLViewer):
         #print self.triangles_count, ' numer of triangles indices'
         #print len(self.triangles_data), 'number of vertices'
         #print self.triangles_color
-    def read_file(self,filename):
-        f = FileHandler(filename)
-        if f.kind == 'neuroey':
-            self.scale = 'micro'
-            return f.parsed_list_dict
 
     def update_colors(self, objts, colors):
         for ii,objt in enumerate(objts):
@@ -220,4 +215,4 @@ class GLCanvas(QGLViewer):
             self.vbo_triangles_index.unbind()
             self.vbo_triangles_color.unbind()
 #        glDisable(GL_BLEND)
-        #this is not even the best method out there, see http://pyopengl.sourceforge.net/context/tutorials/shader_2.xhtml
+        #Ref. http://pyopengl.sourceforge.net/context/tutorials/shader_2.xhtml
