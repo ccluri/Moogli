@@ -51,6 +51,29 @@ class GLCanvas(QGLViewer):
         self.setSceneRadius(10.0)
         self.setAnimationPeriod(100)
 
+    def place_sphere(self, name, start_pos, dia):
+        objt = Sphere(name, centre_pos=np.array((start_pos), dtype=np.float32),
+                      dia=dia)
+        if not self.objt_dict.has_key(objt.name):
+            self.objt_dict[objt.name] = objt
+        else:
+            print 'Sphere with name: ',objt.name,' already exists - use unique name'
+            return
+        try:
+            existing_count = np.ubyte(len(self.triangles_data))
+        except AttributeError:
+            pass
+        try:
+            self.triangles_data = np.vstack((self.triangles_data, np.float32(objt.data)))
+            self.triangles_index = np.hstack((self.triangles_index, objt.index + existing_count))
+            self.triangles_color = np.vstack((self.triangles_color, np.float32(objt.color)))
+            self.spheres_names.append(objt.name)
+        except AttributeError:
+            self.triangles_data = np.array(objt.data, dtype=np.float32)
+            self.triangles_index = np.array(objt.index, dtype=np.ubyte)
+            self.triangles_color = np.array(objt.color, dtype=np.float32)
+            self.spheres_names = [objt.name]
+
     def place_cylinder(self, name, start_pos, end_pos, dia):
         objt = Cylinder(name, start_pos=np.array((start_pos), dtype=np.float32),
                     end_pos=np.array((end_pos), dtype=np.float32), dia=dia)
@@ -121,6 +144,11 @@ class GLCanvas(QGLViewer):
             self.vbo_triangles_index = glvbo.VBO(self.triangles_index, target=GL_ELEMENT_ARRAY_BUFFER)
             self.vbo_triangles_color = glvbo.VBO(self.triangles_color)
             self.triangles_count = len(self.triangles_index)
+        if self.spheres_names:
+            self.vbo_triangles_data = glvbo.VBO(self.triangles_data)
+            self.vbo_triangles_index = glvbo.VBO(self.triangles_index, target=GL_ELEMENT_ARRAY_BUFFER)
+            self.vbo_triangles_color = glvbo.VBO(self.triangles_color)
+            self.triangles_count = len(self.triangles_index)
         #print self.triangles_count, ' numer of triangles indices'
         #print len(self.triangles_data), 'number of vertices'
         #print self.triangles_color
@@ -137,6 +165,10 @@ class GLCanvas(QGLViewer):
             elif objt in self.cylinders_names:
                 cyl_index = self.cylinders_names.index(objt)
                 self.triangles_color[cyl_index:cyl_index+22] = colors[ii]
+                self.t_triangle = 1
+            elif objt in self.spheres_names:
+                sph_index = self.spheres_names.index(objt)
+                self.triangles_color[sph_index:sph_index+30] = colors[ii]
                 self.t_triangle = 1
             else:
                 print objt, 'is not on canvas - cannot update its newcolor'
@@ -162,10 +194,19 @@ class GLCanvas(QGLViewer):
         try:
             for ii,objt in enumerate(objts):
                 cyl_index = self.cylinders_names.index(objt)
-                self.triangles_color[cyl_index:cyl_index+23] = colors[ii]
+                self.triangles_color[cyl_index:cyl_index+22] = colors[ii]
                 self.t_triangle = 1
         except:
             print objt, 'is not a cylinder on canvas'
+
+    def update_spheres_colors(self, objts, colors):
+        try:
+            for ii,objt in enumerate(objts):
+                sph_index = self.spheres_names.index(objt)
+                self.triangles_color[sph_index:sph_index+30] = colors[ii]
+                self.t_triangle = 1
+        except:
+            print objt, 'is not a sphere on canvas'
 
     def animate(self):
         self.update_colors(['Z_axis'],[np.float32(np.random.rand(4))])

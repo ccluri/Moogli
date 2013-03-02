@@ -24,6 +24,8 @@ from numpy import sqrt,arccos,arctan,absolute,array,float32,random
 import OpenGL.arrays.vbo as glvbo
 import numpy as np
 
+sphere_30 = np.load('sphere30.npz')
+
 class BaseObject(object):
 	def __init__(self):
 		"""
@@ -181,21 +183,12 @@ class Sphere(BaseObject):
 		self.start_pos = centre_pos
 		self.dia = dia
 		self.radius = dia/2.0
-#		self.data = self.generate_data()
+		self.data = np.array((self.radius*sphere_30['points'] + self.start_pos), dtype=np.float32)
+		self.index = sphere_30['indx']
+		self.color = np.zeros([len(self.data),4])
+		for ii in range(len(self.data)):
+			self.color[ii:] = np.array(np.hstack((self.rgb, self.a)), dtype=float32)
 
-	def generate_data(self):
-		data = np.empty([np.square(self.subdivisions),3])
-		angle = 360.0 / self.subdivisions
-		ii = 0
-	#	for ph in np.arange(-90.0, 90.0, angle):
-#			for th in np.arange(0.0, 360.0, 2*angle):
-#				data[ii] = self.get_vertex(
-			
-	def get_vertex(self, th2, ph2):
-		x = np.sin(th2)*np.cos(ph2);
-		y = np.cos(th2)*np.cos(ph2);
-		z = np.sin(ph2);
-		return x,y,z
 		
 class Disk(BaseObject):
 	"""

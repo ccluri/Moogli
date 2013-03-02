@@ -1,6 +1,6 @@
 from PyQt4 import Qt,QtGui,QtCore
 from canvas import GLCanvas
-from neuroey impoert Neuroey
+#from neuroey import Neuroey
 from filehandler import FileHandler
 import sys
 
@@ -12,7 +12,7 @@ def Moogli():
         def __init__(self, args):
             QtGui.QApplication.__init__(self,args)
             self.window = GLWindow()
-            self.neuroey = Neuroey()
+            #self.neuroey = Neuroey()
             self.canvas = self.window.canvas
             self.filehandler = None
             self.parsed_dict = {}
