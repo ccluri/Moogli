@@ -35,7 +35,7 @@ class GLCanvas(QGLViewer):
         self.points_names = []
         self.lines_names = []
         self.cylinders_names = []
-
+        self.spheres_names = []
         self.points_count = 0
         self.lines_count = 0
         self.triangles_count = 0
@@ -44,6 +44,7 @@ class GLCanvas(QGLViewer):
         self.t_line = 0
         self.t_triangle = 0
         
+
     def init(self):
         self.restoreStateFromFile()
         #glDisable(GL_LIGHTING)
@@ -75,8 +76,7 @@ class GLCanvas(QGLViewer):
             self.spheres_names = [objt.name]
 
     def place_cylinder(self, name, start_pos, end_pos, dia):
-        objt = Cylinder(name, start_pos=np.array((start_pos), dtype=np.float32),
-                    end_pos=np.array((end_pos), dtype=np.float32), dia=dia)
+        objt = Cylinder(name, start_pos=np.array((start_pos), dtype=np.float32), end_pos=np.array((end_pos), dtype=np.float32), dia=dia)
         if not self.objt_dict.has_key(objt.name):
             self.objt_dict[objt.name] = objt
         else:
@@ -98,8 +98,7 @@ class GLCanvas(QGLViewer):
             self.cylinders_names = [objt.name]
 
     def place_line(self, name, start_pos, end_pos):
-        objt = Line(name, start_pos=np.array((start_pos), dtype=np.float32)*1e4,
-                    end_pos=np.array((end_pos), dtype=np.float32)*1e4)
+        objt = Line(name, start_pos=np.array((start_pos), dtype=np.float32), end_pos=np.array((end_pos), dtype=np.float32))
         if not self.objt_dict.has_key(objt.name):
             self.objt_dict[objt.name] = objt
         else:
@@ -115,7 +114,7 @@ class GLCanvas(QGLViewer):
             self.lines_names = [objt.name]
 
     def place_point(self, name, start_pos):
-        objt = Point(name, position=np.array((start_pos), dtype=np.float32)/1000.0)
+        objt = Point(name, position=np.array((start_pos), dtype=np.float32))
         if not self.objt_dict.has_key(objt.name):
             self.objt_dict[objt.name] = objt
         else:
@@ -152,6 +151,31 @@ class GLCanvas(QGLViewer):
         #print self.triangles_count, ' numer of triangles indices'
         #print len(self.triangles_data), 'number of vertices'
         #print self.triangles_color
+
+    def clear_all(self):
+        self.objt_dict = {}
+        self.points_names = []
+        self.lines_names = []
+        self.cylinders_names = []
+        self.spheres_names = []
+        self.points_count = 0
+        self.lines_count = 0
+        self.triangles_count = 0
+        self.t_point = 0
+        self.t_line = 0
+        self.t_triangle = 0
+        try:
+            del self.vbo_points_data, self.vbo_points_color
+        except AttributeError, NameError:
+            pass
+        try:
+            del self.vbo_lines_data, self.vbo_lines_color
+        except AttributeError, NameError:
+            pass
+        try: 
+            del self.vbo_triangles_data, self.vbo_triangles_index, self.vbo_triangles_color
+        except AttributeError, NameError:
+            pass
 
     def update_colors(self, objts, colors):
         for ii,objt in enumerate(objts):
