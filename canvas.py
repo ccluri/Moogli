@@ -5,21 +5,21 @@
 # modify it under the terms of the GNU General Public License as
 # published by the Free Software Foundation; either version 3, or
 # (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program; see the file COPYING.  If not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth
 # Floor, Boston, MA 02110-1301, USA.
 
 from PyQt4 import QtCore, QtGui
+import OpenGL.arrays.vbo as glvbo
 from PyQGLViewer import *
 from objects import *
-import OpenGL.arrays.vbo as glvbo
 import numpy as np
 from filehandler import FileHandler
 #from neuroey import Neuroey
@@ -43,7 +43,7 @@ class GLCanvas(QGLViewer):
         self.t_point = 0
         self.t_line = 0
         self.t_triangle = 0
-        
+
 
     def init(self):
         self.restoreStateFromFile()
@@ -97,8 +97,13 @@ class GLCanvas(QGLViewer):
             self.triangles_color = np.array(objt.color, dtype=np.float32)
             self.cylinders_names = [objt.name]
 
-    def place_line(self, name, start_pos, end_pos):
-        objt = Line(name, start_pos=np.array((start_pos), dtype=np.float32), end_pos=np.array((end_pos), dtype=np.float32))
+    def place_line(self, name, start_pos, end_pos, color):
+        objt = Line( name
+                   , start_pos=np.array((start_pos), dtype=np.float32)
+                   , end_pos=np.array((end_pos), dtype=np.float32)
+                   , rgb=np.array((color[0], color[1], color[2]), dtype=np.float32)
+                   , alpha=np.array((color[3]), dtype=np.float32)
+                   )
         if not self.objt_dict.has_key(objt.name):
             self.objt_dict[objt.name] = objt
         else:
@@ -172,7 +177,7 @@ class GLCanvas(QGLViewer):
             del self.vbo_lines_data, self.vbo_lines_color
         except AttributeError, NameError:
             pass
-        try: 
+        try:
             del self.vbo_triangles_data, self.vbo_triangles_index, self.vbo_triangles_color
         except AttributeError, NameError:
             pass
@@ -204,7 +209,7 @@ class GLCanvas(QGLViewer):
                 self.t_point = 1
         except ValueError:
             print objt, 'is not a point on canvas'
-            
+
     def update_lines_colors(self, objts, colors):
         try:
             for ii,objt in enumerate(objts):
@@ -213,7 +218,7 @@ class GLCanvas(QGLViewer):
                 self.t_line = 1
         except ValueError:
             print objt, 'is not a line on canvas'
-            
+
     def update_cylinders_colors(self, objts, colors):
         try:
             for ii,objt in enumerate(objts):

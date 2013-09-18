@@ -5,12 +5,12 @@
 # modify it under the terms of the GNU General Public License as
 # published by the Free Software Foundation; either version 3, or
 # (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program; see the file COPYING.  If not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth
@@ -57,7 +57,7 @@ class BaseObject(object):
 	def update_rgb(self, rgb):
 		self.rgb = rgb
 		self.update_color()
-		
+
 	def update_a(self, a):
 		self.a = a
 		self.update_color()
@@ -87,7 +87,7 @@ class Line(BaseObject):
 	Class that defines a compartment as a simple line.
 	"""
 
-	def __init__(self, name, start_pos, end_pos):
+	def __init__(self, name, start_pos, end_pos, rgb, alpha):
 		"""
 		Constructor. usecase: Line(name='Axon1',start_pos=[0.0,0.0,0.0], end_pos=[1.0,0.0,0.0])
 		"""
@@ -95,12 +95,14 @@ class Line(BaseObject):
 		self.name = name
 		self.draw_as = 'Line'
 		self.data = np.array((start_pos, end_pos), dtype=np.float32)
+		self.rgb = rgb
+		self.a = alpha
 		self.color = np.hstack((self.rgb, self.a))
 		self.color = np.vstack((self.color, self.color))
 
 class Cylinder(BaseObject):
 	"""
-	Class that defines a compartment as a cylindrical shape. 
+	Class that defines a compartment as a cylindrical shape.
 	"""
 	def __init__(self, name, start_pos, end_pos, dia):
 		"""
@@ -170,7 +172,7 @@ class Cylinder(BaseObject):
 		indx = np.array(np.hstack(indx), dtype=np.ubyte)
 		return nump, indx
 
-		
+
 class Sphere(BaseObject):
 	"""
 	Class that defines a compartment as a sphere.
@@ -189,10 +191,10 @@ class Sphere(BaseObject):
 		for ii in range(len(self.data)):
 			self.color[ii:] = np.array(np.hstack((self.rgb, self.a)), dtype=float32)
 
-		
+
 class Disk(BaseObject):
 	"""
-	Class that defines a compartment as a Disk. 
+	Class that defines a compartment as a Disk.
 	"""
 	def __init__(self, name, centre_pos, dia=1.0):
 		"""
@@ -213,7 +215,7 @@ class Disk(BaseObject):
 		glPushMatrix()
 		glColor(self.r, self.g, self.b, self.a)
 
-		glTranslate(*self.start_pos[:3])		
+		glTranslate(*self.start_pos[:3])
 		quadric = gluNewQuadric()
 		gluDisk( quadric, 0.0, self.radius, self.subdivisions, 1)
 		glTranslate(*[i*-1 for i in self.start_pos[:3]])
@@ -224,7 +226,7 @@ class Disk(BaseObject):
 
 class Capsule(BaseObject):
 	"""
-	Class that defines a compartment as a cylindrical shape. 
+	Class that defines a compartment as a cylindrical shape.
 	"""
 
 	def __init__(self, name, start_pos, end_pos, dia):
