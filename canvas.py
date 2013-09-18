@@ -97,8 +97,13 @@ class GLCanvas(QGLViewer):
             self.triangles_color = np.array(objt.color, dtype=np.float32)
             self.cylinders_names = [objt.name]
 
-    def place_line(self, name, start_pos, end_pos):
-        objt = Line(name, start_pos=np.array((start_pos), dtype=np.float32), end_pos=np.array((end_pos), dtype=np.float32))
+    def place_line(self, name, start_pos, end_pos, color):
+        objt = Line( name
+                   , start_pos=np.array((start_pos), dtype=np.float32)
+                   , end_pos=np.array((end_pos), dtype=np.float32)
+                   , rgb=np.array((color[0], color[1], color[2]), dtype=np.float32)
+                   , alpha=np.array((color[3]), dtype=np.float32)
+                   )
         if not self.objt_dict.has_key(objt.name):
             self.objt_dict[objt.name] = objt
         else:

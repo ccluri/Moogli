@@ -11,15 +11,15 @@ class TestMoogli():
         #self.test_lines_canvas()
         #self.test_cylinders_canvas()
         #self.test_spheres_canvas()
-        #self.test_cell_lines()
-        self.test_cell_cylinders()
-        
+        self.test_cell_lines()
+        #self.test_cell_cylinders()
+
     def test_points_canvas(self):
         """If place_points in canvas is correct. 1000 random points are displayed in a unit cube, colored - red"""
         self.mgl.canvas.clear_all()
         points_pos = np.random.rand(1000,3)
         for ii,point_pos in enumerate(points_pos):
-            self.mgl.canvas.place_point(str(ii), point_pos) 
+            self.mgl.canvas.place_point(str(ii), point_pos)
         self.mgl.show()
         self.assertTrue(self.ask_for_correctness("1000 points in red, inside unit sphere"))
 
@@ -62,7 +62,7 @@ class TestMoogli():
         # cmp_name = 'L23PyrFRB/Seg0_comp_22'
         # cmp_pos = parsed_vals[cmp_name]
         # self.mgl.canvas.place_cylinder(cmp_name, [ii*1e4 for ii in cmp_pos[:3]],[jj*1e4 for jj in cmp_pos[3:6]], cmp_pos[6]*1e4)
-        self.mgl.show()        
+        self.mgl.show()
 
     def test_spheres_canvas(self):
         """if spheres are displayed correctly, one at 111 of unit radius"""
@@ -78,7 +78,11 @@ class TestMoogli():
         parsed_vals = fh.get_values()
         del fh
         for cmp_name,cmp_pos in parsed_vals.iteritems():
-            self.mgl.canvas.place_line(cmp_name, [ii*1e4 for ii in cmp_pos[:3]],[ii*1e4 for ii in cmp_pos[3:6]])
+            self.mgl.canvas.place_line( cmp_name
+                                      , [ii*1e4 for ii in cmp_pos[:3]]
+                                      , [ii*1e4 for ii in cmp_pos[3:6]]
+                                      , [1.0, 0.0, 0.0, 1.0]
+                                      )
         self.mgl.show()
 
 
