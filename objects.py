@@ -169,7 +169,7 @@ class Cylinder(BaseObject):
 			indx.extend([point_2, point_3, point_4])
 			indx.extend([point_1, 0, point_3])
 			indx.extend([point_2, 1, point_4])
-		indx = np.array(np.hstack(indx), dtype=np.ubyte)
+		indx = np.array(np.hstack(indx), dtype=np.uint32)
 		return nump, indx
 
 

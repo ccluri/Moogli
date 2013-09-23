@@ -61,7 +61,7 @@ class GLCanvas(QGLViewer):
             print 'Sphere with name: ',objt.name,' already exists - use unique name'
             return
         try:
-            existing_count = np.ubyte(len(self.triangles_data))
+            existing_count = np.uint32(len(self.triangles_data))
         except AttributeError:
             pass
         try:
@@ -71,7 +71,7 @@ class GLCanvas(QGLViewer):
             self.spheres_names.append(objt.name)
         except AttributeError:
             self.triangles_data = np.array(objt.data, dtype=np.float32)
-            self.triangles_index = np.array(objt.index, dtype=np.ubyte)
+            self.triangles_index = np.array(objt.index, dtype=np.uint32)
             self.triangles_color = np.array(objt.color, dtype=np.float32)
             self.spheres_names = [objt.name]
 
@@ -83,7 +83,7 @@ class GLCanvas(QGLViewer):
             print 'Cylinder with name: ',objt.name,' already exists - use unique name'
             return
         try:
-            existing_count = np.ubyte(len(self.triangles_data))
+            existing_count = np.uint32(len(self.triangles_data))
         except AttributeError:
             pass
         try:
@@ -93,10 +93,10 @@ class GLCanvas(QGLViewer):
             self.cylinders_names.append(objt.name)
         except AttributeError:
             self.triangles_data = np.array(objt.data, dtype=np.float32)
-            self.triangles_index = np.array(objt.index, dtype=np.ubyte)
+            self.triangles_index = np.array(objt.index, dtype=np.uint32)
             self.triangles_color = np.array(objt.color, dtype=np.float32)
             self.cylinders_names = [objt.name]
-
+        
     def place_line(self, name, start_pos, end_pos, color):
         objt = Line( name
                    , start_pos=np.array((start_pos), dtype=np.float32)
@@ -153,9 +153,6 @@ class GLCanvas(QGLViewer):
             self.vbo_triangles_index = glvbo.VBO(self.triangles_index, target=GL_ELEMENT_ARRAY_BUFFER)
             self.vbo_triangles_color = glvbo.VBO(self.triangles_color)
             self.triangles_count = len(self.triangles_index)
-        #print self.triangles_count, ' numer of triangles indices'
-        #print len(self.triangles_data), 'number of vertices'
-        #print self.triangles_color
 
     def clear_all(self):
         self.objt_dict = {}
@@ -280,7 +277,7 @@ class GLCanvas(QGLViewer):
             glEnableClientState(GL_COLOR_ARRAY)
             glColorPointer(4, GL_FLOAT, 0, self.vbo_triangles_color)
             self.vbo_triangles_index.bind()
-            glDrawElements(GL_TRIANGLES, self.triangles_count, GL_UNSIGNED_BYTE, self.vbo_triangles_index)
+            glDrawElements(GL_TRIANGLES, self.triangles_count, GL_UNSIGNED_INT, self.vbo_triangles_index)
             self.vbo_triangles_data.unbind()
             self.vbo_triangles_index.unbind()
             self.vbo_triangles_color.unbind()
