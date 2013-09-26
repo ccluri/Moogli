@@ -26,10 +26,10 @@ class TestMoogli():
     def test_lines_canvas(self):
         """If place_lines in canvas is correct. a square at z=1 plane, colored red"""
         self.mgl.canvas.clear_all()
-        self.mgl.canvas.place_line('line1',[1,1,1],[1,-1,1])
-        self.mgl.canvas.place_line('line2',[1,-1,1],[-1,-1,1])
-        self.mgl.canvas.place_line('line3',[-1,-1,1],[-1,1,1])
-        self.mgl.canvas.place_line('line4',[-1,1,1],[1,1,1])
+        self.mgl.canvas.place_line('line1',[1,1,1],[1,-1,1],[1,0,0,1])
+        self.mgl.canvas.place_line('line2',[1,-1,1],[-1,-1,1],[1,0,0,1])
+        self.mgl.canvas.place_line('line3',[-1,-1,1],[-1,1,1],[1,0,0,1])
+        self.mgl.canvas.place_line('line4',[-1,1,1],[1,1,1],[1,0,0,1])
         self.mgl.show()
         self.assertTrue(self.ask_for_correctness("4 lines at z=1 plane, making a square, colored-red"))
 
@@ -37,11 +37,11 @@ class TestMoogli():
     def test_cylinders_canvas(self):
         """If place_cylinders in canvas is correcnt. 4 cylinders, one on x,y and z, and another between 111 and 222, colored red"""
         self.mgl.canvas.clear_all()
-        self.mgl.canvas.place_cylinder('Xaxis', [0.0, 0.0, 0.0], [1.0, 0.0, 0.0], 1.0)
-        self.mgl.canvas.place_cylinder('X1axis', [1.0, 0.0, 0.0], [2.0, 0.0, 0.0], 0.5)
-        self.mgl.canvas.place_cylinder('Zaxis', [0.0, 0.0, 1.0], [0.0, 0.0, 4.0], 1.5)
-        self.mgl.canvas.place_cylinder('Yaxis', [0.0, 1.0, 0.0], [0.0, 2.0, 0.0], 0.7)
-        self.mgl.canvas.place_cylinder('freeBird', [1.0, 1.0, 1.0], [2.0, 2.0, 2.0], 1.0)
+        self.mgl.canvas.place_cylinder('Xaxis', [0.0, 0.0, 0.0], [1.0, 0.0, 0.0], 1.0, [1.,0.,0.,1.])
+        self.mgl.canvas.place_cylinder('X1axis', [1.0, 0.0, 0.0], [2.0, 0.0, 0.0], 0.5, [0.,1.,0.,1.])
+        self.mgl.canvas.place_cylinder('Zaxis', [0.0, 0.0, 1.0], [0.0, 0.0, 4.0], 1.5, [0.,0.,1.,1.])
+        self.mgl.canvas.place_cylinder('Yaxis', [0.0, 1.0, 0.0], [0.0, 2.0, 0.0], 0.7, [1.,0.,0.,1.])
+        self.mgl.canvas.place_cylinder('freeBird', [1.0, 1.0, 1.0], [2.0, 2.0, 2.0], 1.0, [0.,1.,0.,1.])
         self.mgl.show()
         self.assertTrue(self.ask_for_correctness("4 cylinders, 3 on axis and 1 between 111 and 222"))
 
@@ -52,7 +52,11 @@ class TestMoogli():
         parsed_vals = fh.get_values()
         del fh
         for cmp_name,cmp_pos in parsed_vals.iteritems():
-            self.mgl.canvas.place_cylinder(cmp_name, [ii*1e4 for ii in cmp_pos[:3]],[jj*1e4 for jj in cmp_pos[3:6]], cmp_pos[6]*1e4)
+            self.mgl.canvas.place_cylinder(cmp_name, 
+                                           [ii*1e4 for ii in cmp_pos[:3]],
+                                           [jj*1e4 for jj in cmp_pos[3:6]], 
+                                           cmp_pos[6]*1e4, 
+                                           [1.,0.,0.,1.])
         self.mgl.show()
 
     def test_spheres_canvas(self):
@@ -69,11 +73,10 @@ class TestMoogli():
         parsed_vals = fh.get_values()
         del fh
         for cmp_name,cmp_pos in parsed_vals.iteritems():
-            self.mgl.canvas.place_line( cmp_name
-                                      , [ii*1e4 for ii in cmp_pos[:3]]
-                                      , [ii*1e4 for ii in cmp_pos[3:6]]
-                                      , [1.0, 0.0, 0.0, 1.0]
-                                      )
+            self.mgl.canvas.place_line(cmp_name,
+                                       [ii*1e4 for ii in cmp_pos[:3]],
+                                       [ii*1e4 for ii in cmp_pos[3:6]],
+                                       [1.0, 0.0, 0.0, 1.0])
         self.mgl.show()
 
 

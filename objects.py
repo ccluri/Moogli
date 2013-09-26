@@ -104,13 +104,15 @@ class Cylinder(BaseObject):
 	"""
 	Class that defines a compartment as a cylindrical shape.
 	"""
-	def __init__(self, name, start_pos, end_pos, dia):
+	def __init__(self, name, start_pos, end_pos, dia, rgb, alpha):
 		"""
 		Constructor.
 		"""
 		super(Cylinder, self).__init__()
 		self.name = name
 		self.draw_as = 'Cylinder'
+		self.rgb = rgb
+		self.a = alpha
 		self.start_pos = np.array((start_pos), dtype=np.float32)
 		self.end_pos = np.array((end_pos), dtype=np.float32)
 		self.dia = dia

@@ -44,13 +44,17 @@ class GLCanvas(QGLViewer):
         self.t_line = 0
         self.t_triangle = 0
 
+        self.light2 = ManipulatedFrame()
+        self.show_lights = False#True
 
     def init(self):
-        self.restoreStateFromFile()
         #glDisable(GL_LIGHTING)
-        self.setBackgroundColor(QtGui.QColor(255, 255, 255, 255))
+        self.setBackgroundColor(QtGui.QColor(204, 204, 204, 255))
+        #self.setBackgroundColor(QtGui.QColor(255, 255, 255, 255))
         self.setSceneRadius(10.0)
         self.setAnimationPeriod(100)
+        self.light_defaults()
+        self.restoreStateFromFile()
 
     def place_sphere(self, name, start_pos, dia):
         objt = Sphere(name, centre_pos=np.array((start_pos), dtype=np.float32),
@@ -75,8 +79,13 @@ class GLCanvas(QGLViewer):
             self.triangles_color = np.array(objt.color, dtype=np.float32)
             self.spheres_names = [objt.name]
 
-    def place_cylinder(self, name, start_pos, end_pos, dia):
-        objt = Cylinder(name, start_pos=np.array((start_pos), dtype=np.float32), end_pos=np.array((end_pos), dtype=np.float32), dia=dia)
+    def place_cylinder(self, name, start_pos, end_pos, dia, color):
+        objt = Cylinder(name,
+                        start_pos=np.array((start_pos),dtype=np.float32), 
+                        end_pos=np.array((end_pos), dtype=np.float32), 
+                        dia=dia,
+                        rgb=np.array((color[0],color[1],color[2]), dtype=np.float32),
+                        alpha=np.array((color[3]), dtype=np.float32))
         if not self.objt_dict.has_key(objt.name):
             self.objt_dict[objt.name] = objt
         else:
@@ -98,12 +107,11 @@ class GLCanvas(QGLViewer):
             self.cylinders_names = [objt.name]
         
     def place_line(self, name, start_pos, end_pos, color):
-        objt = Line( name
-                   , start_pos=np.array((start_pos), dtype=np.float32)
-                   , end_pos=np.array((end_pos), dtype=np.float32)
-                   , rgb=np.array((color[0], color[1], color[2]), dtype=np.float32)
-                   , alpha=np.array((color[3]), dtype=np.float32)
-                   )
+        objt = Line(name,
+                    start_pos=np.array((start_pos), dtype=np.float32),
+                    end_pos=np.array((end_pos), dtype=np.float32),
+                    rgb=np.array((color[0], color[1], color[2]), dtype=np.float32),
+                    alpha=np.array((color[3]), dtype=np.float32))
         if not self.objt_dict.has_key(objt.name):
             self.objt_dict[objt.name] = objt
         else:
@@ -244,10 +252,83 @@ class GLCanvas(QGLViewer):
             self.vbo_triangles_color.set_array(self.triangles_color)
         self.t_point, self.t_line, self.t_triangle = 0, 0, 0
 
+    def light_defaults(self):
+        glMatrixMode(GL_MODELVIEW)
+        glLoadIdentity()
+        # Light0 is the default ambient light
+        glEnable(GL_LIGHT0)
+        # Light1 is a spot light
+        # glEnable(GL_LIGHT1)
+        # light_ambient  = [0.8, 0.2, 0.2, 1.0]
+        # light_diffuse  = [1.0, 0.4, 0.4, 1.0]
+        # light_specular = [1.0, 0.0, 0.0, 1.0]
+        
+        # glLightf(GL_LIGHT1, GL_SPOT_EXPONENT,  3.0)
+        # glLightf( GL_LIGHT1, GL_SPOT_CUTOFF,    20.0)
+        # glLightf( GL_LIGHT1, GL_CONSTANT_ATTENUATION, 0.5)
+        # glLightf( GL_LIGHT1, GL_LINEAR_ATTENUATION, 1.0)
+        # glLightf( GL_LIGHT1, GL_QUADRATIC_ATTENUATION, 1.5)
+        # glLightfv( GL_LIGHT1, GL_AMBIENT,  light_ambient)
+        # glLightfv( GL_LIGHT1, GL_SPECULAR, light_specular)
+        # glLightfv( GL_LIGHT1, GL_DIFFUSE,  light_diffuse)
+
+        # Light2 is a classical directionnal light
+        glEnable(GL_LIGHT2)
+        light_ambient2  = [0.2, 0.2, 2.0, 1.0]
+        light_diffuse2  = [0.8, 0.8, 1.0, 1.0]
+        light_specular2 = [0.0, 0.0, 1.0, 1.0]
+        glLightfv(GL_LIGHT2, GL_AMBIENT,  light_ambient2)
+        glLightfv(GL_LIGHT2, GL_SPECULAR, light_specular2)
+        glLightfv(GL_LIGHT2, GL_DIFFUSE,  light_diffuse2)
+        self.setMouseTracking(True)
+        
+        #self.light1.setPosition(0.5, 0.5, 0)
+        # Align z axis with -position direction : look at scene center
+        #self.light1.setOrientation(Quaternion(Vec(0,0,1), -self.light1.position()))
+        self.light2.setPosition(-0.5, 0.5, 0)
+
+    def pre_draw_lights(self):
+        pos = [1.0, 0.5, 0.0, 0.0]
+        # Directionnal light
+        glLightfv(GL_LIGHT0, GL_POSITION, pos)
+        pos[3] = 1.0
+        # # Spot light
+        # pos2 = list(self.light1.getPosition()) + [1]
+        # glLightfv(GL_LIGHT1, GL_POSITION, pos2)
+        # v = self.light1.getInverseTransformOf((0,0,1))
+        # glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, v)
+        # Point light
+        pos3 = list(self.light2.getPosition())
+        pos3.append(1.0)
+        glLightfv(GL_LIGHT2, GL_POSITION, pos3)
+
+
+    def post_draw_lights(self):
+        if self.show_lights:
+            self.drawLight(GL_LIGHT0)
+            #if self.light1.grabsMouse() :
+            #    self.drawLight(GL_LIGHT1, 1.2)
+            #else:
+            #    self.drawLight(GL_LIGHT1)
+            if self.light2.grabsMouse():
+                self.drawLight(GL_LIGHT2, 1.2)
+            else:
+                self.drawLight(GL_LIGHT2)
+
+    def keyPressEvent(self,e):
+        modifiers = e.modifiers()
+        handled = False
+        if ((e.key()==QtCore.Qt.Key_L) and (modifiers==QtCore.Qt.NoModifier)):
+            self.show_lights = not self.show_lights
+            self.updateGL()
+        if not handled:
+            QGLViewer.keyPressEvent(self,e)
+
     def draw(self):
         glClear(GL_COLOR_BUFFER_BIT)
-#        glEnable(GL_BLEND)
-#        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+        self.pre_draw_lights()
+        glEnable(GL_BLEND)
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
         if self.points_count:
             self.vbo_points_data.bind()
             glEnableClientState(GL_VERTEX_ARRAY)
@@ -266,6 +347,7 @@ class GLCanvas(QGLViewer):
             self.vbo_lines_color.bind()
             glEnableClientState(GL_COLOR_ARRAY)
             glColorPointer(4, GL_FLOAT, 0, self.vbo_lines_color)
+            glLineWidth(2.0)
             glDrawArrays(GL_LINES, 0, self.lines_count)
             self.vbo_lines_data.unbind()
             self.vbo_lines_color.unbind()
@@ -281,5 +363,6 @@ class GLCanvas(QGLViewer):
             self.vbo_triangles_data.unbind()
             self.vbo_triangles_index.unbind()
             self.vbo_triangles_color.unbind()
-#        glDisable(GL_BLEND)
+        self.post_draw_lights()
+        glDisable(GL_BLEND)
         #Ref. http://pyopengl.sourceforge.net/context/tutorials/shader_2.xhtml
