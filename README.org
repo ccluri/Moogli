@@ -6,6 +6,8 @@
    visualize activity (time series) in these cells.
 
    [[./help/purk.jpg]]
+   
+   [[./help/purk2.jpg]]
 
    For details regarding installation and usage see 'help' folder 
 
