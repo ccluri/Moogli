@@ -5,6 +5,8 @@
    of single/multiple neurons or network of neurons, and can also
    visualize activity (time series) in these cells.
 
+   [[./help/purk2.jpg][Purkcell]]
+
    For details regarding installation and usage see 'help' folder 
 
    Homepage: http://moose.ncbs.res.in/moogli
