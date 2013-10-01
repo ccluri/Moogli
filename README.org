@@ -5,8 +5,7 @@
    of single/multiple neurons or network of neurons, and can also
    visualize activity (time series) in these cells.
 
-   [[https://raw.github.com/ccluri/Moogli/dev/help/purk.jpg][Purkcell]]
-   ![ScreenShot](https://raw.github.com/ccluri/Moogli/dev/help/purk.jpg)
+   [[./help/purk.jpg]]
 
    For details regarding installation and usage see 'help' folder 
 
