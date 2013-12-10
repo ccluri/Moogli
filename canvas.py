@@ -51,7 +51,7 @@ class GLCanvas(QGLViewer):
         #glDisable(GL_LIGHTING)
         self.setBackgroundColor(QtGui.QColor(204, 204, 204, 255))
         #self.setBackgroundColor(QtGui.QColor(255, 255, 255, 255))
-        self.setSceneRadius(10.0)
+        #self.setSceneRadius(100.0)
         self.setAnimationPeriod(100)
         self.light_defaults()
         self.restoreStateFromFile()
@@ -78,6 +78,31 @@ class GLCanvas(QGLViewer):
             self.triangles_index = np.array(objt.index, dtype=np.uint32)
             self.triangles_color = np.array(objt.color, dtype=np.float32)
             self.spheres_names = [objt.name]
+
+    def place_cylinders(self, point_pos_dict, color):
+        #print len(self.triangles_data), len(self.triangles_index), len(self.triangles_color), self.triangles_count
+        #22,120,22,120
+        num_cylinders = len(point_pos_dict)
+        self.triangles_data = np.zeros((22*num_cylinders, 3), dtype=np.float32)
+        self.triangles_index = np.zeros(120*num_cylinders, dtype=np.uint32)
+        self.triangles_color = np.zeros((22*num_cylinders, 4), dtype=np.float32)
+
+        doh_2 = 0 #index to keep count of number of cylinders drawn
+        factor = 1e3
+        for ii, point_pos in point_pos_dict.iteritems():
+            objt = Cylinder(ii,
+                            start_pos=np.array((point_pos[:3]), dtype=np.float32)*factor,
+                            end_pos=np.array((point_pos[3:6]),dtype=np.float32)*factor,
+                            dia=point_pos[6]*factor,
+                            rgb=np.array((color[0],color[1],color[2]),dtype=np.float32),
+                            alpha=np.array((color[3]),dtype=np.float32))
+        
+            self.triangles_data[doh_2*22:(doh_2+1)*22,:] = objt.data
+            self.triangles_index[doh_2*120: (doh_2+1)*120] = objt.index + (doh_2*22)
+            self.triangles_color[doh_2*22: (doh_2+1)*22,:] = objt.color
+            self.cylinders_names.append(objt.name)
+            self.objt_dict[objt.name] = objt
+            doh_2 += 1
 
     def place_cylinder(self, name, start_pos, end_pos, dia, color):
         objt = Cylinder(name,
@@ -161,6 +186,7 @@ class GLCanvas(QGLViewer):
             self.vbo_triangles_index = glvbo.VBO(self.triangles_index, target=GL_ELEMENT_ARRAY_BUFFER)
             self.vbo_triangles_color = glvbo.VBO(self.triangles_color)
             self.triangles_count = len(self.triangles_index)
+        #print self.triangles_data, self.triangles_index, self.triangles_color, self.triangles_count
 
     def clear_all(self):
         self.objt_dict = {}
@@ -323,6 +349,7 @@ class GLCanvas(QGLViewer):
             self.updateGL()
         if not handled:
             QGLViewer.keyPressEvent(self,e)
+        self.showEntireScene()
 
     def draw(self):
         glClear(GL_COLOR_BUFFER_BIT)

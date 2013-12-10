@@ -117,15 +117,16 @@ class Cylinder(BaseObject):
 		self.end_pos = np.array((end_pos), dtype=np.float32)
 		self.dia = dia
 		self.data, self.index = self.generate_cylinder()
-		self.color = np.zeros([len(self.data),4])
-		for ii in range(len(self.data)):
-			self.color[ii:] = np.array(np.hstack((self.rgb, self.a)), dtype=float32)
+		self.color = np.zeros([22, 4])
+		for ii in range(22):
+			self.color[ii,:3] = self.rgb
+			self.color[ii, 3] = self.a
 
 	def vertex(self, r, angle):
 		'''angle in degrees'''
 		x = r*np.cos(np.radians(angle))
 		y = r*np.sin(np.radians(angle))
-		return np.hstack((x,y))
+		return np.array((x,y))
 
 	def generate_cylinder(self):
 		r = self.dia / 2.0
@@ -137,7 +138,7 @@ class Cylinder(BaseObject):
 		#Eq of plane
 		#L[0](x)+L[1](y)+L[2](z) = L[0]*P1[0]+L[1]*P1[1]+L[2]*P1[2]
 		#A pt on plane above
-		dum_num = [1.00001,2.80] #np.random.rand(2,1)
+		dum_num = [1.00001, 2.80] #np.random.rand(2,1)
 		if L[0] != 0.0: #if the x intersect is non zero.
  			P = np.array(((np.dot(L,P1) -L[1]*dum_num[0] -L[2]*dum_num[1]) / L[0], dum_num[0], dum_num[1]), dtype=np.float32)
 		elif L[1] != 0.0:
@@ -151,29 +152,40 @@ class Cylinder(BaseObject):
 		V = V / np.linalg.norm(V)
 		subdiv = self.subdivisions
 		angle = 360.0 / subdiv
-		points = [P1, P2]
+		# data_array = np.zeros((22, 3), dtype=np.float32)
+		# data_array[0, :] = P1
+		# data_array[1, :] = P2
+		# doh_1 = 2 #dummy variable
+		# for angle_down in np.arange(0.0, 360.0, angle):
+		# 	ang_down = np.radians(angle_down)
+		# 	bot_pt = P1 + r*np.sin(ang_down)*U + r*np.cos(ang_down)*V
+		# 	data_array[doh_1, :] = bot_pt
+		# 	data_array[doh_1+1, :]= bot_pt + L
+		# 	doh_1 += 2
+		# indx = np.zeros(120, dtype=np.uint32)
+		# for ii in range(2, 22, 2):
+		# 	if ii != 20:
+		# 		indx[12*((ii-2)/2): 12*(1+(ii-2)/2)] = ii, ii+1, ii+2, ii+1, ii+2, ii+3, ii, 0, ii+2, ii+1, 1, ii+3	
+		# 	else:
+		# 		indx[12*((ii-2)/2): 12*(1+(ii-2)/2)] = ii, ii+1, 2, ii+1, 2, 3, ii, 0, 2, ii+1, 1, 3	
+		# return data_array, indx
+		data_array = []#np.zeros((22, 3), dtype=np.float32)
+		data_array.append(P1)
+		data_array.append(P2)
 		for angle_down in np.arange(0.0, 360.0, angle):
 			ang_down = np.radians(angle_down)
 			bot_pt = P1 + r*np.sin(ang_down)*U + r*np.cos(ang_down)*V
-			points.append(bot_pt)
-			points.append(bot_pt + L)
-		nump = np.array(np.vstack(points), dtype=np.float32)
-		indx = []
+			data_array.append(bot_pt)
+			data_array.append(bot_pt + L)
+		data_array_np = np.array((data_array), dtype=np.float32)
+		indx = []#np.zeros(120, dtype=np.uint32)
 		for ii in range(2, 22, 2):
-			point_1 = ii
-			point_2 = ii+1
-			point_3 = ii+2
-			point_4 = ii+3
-			if ii == 20:
-				point_3 = 2
-				point_4 = 3
-			indx.extend([point_1, point_2, point_3])
-			indx.extend([point_2, point_3, point_4])
-			indx.extend([point_1, 0, point_3])
-			indx.extend([point_2, 1, point_4])
-		indx = np.array(np.hstack(indx), dtype=np.uint32)
-		return nump, indx
-
+			if ii != 20:
+				indx.extend([ii, ii+1, ii+2, ii+1, ii+2, ii+3, ii, 0, ii+2, ii+1, 1, ii+3])
+			else:
+				indx.extend([ii, ii+1, 2, ii+1, 2, 3, ii, 0, 2, ii+1, 1, 3])
+		indx_np = np.array((indx), dtype=np.uint32)
+		return data_array_np, indx_np
 
 class Sphere(BaseObject):
 	"""

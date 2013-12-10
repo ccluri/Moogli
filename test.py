@@ -9,10 +9,10 @@ class TestMoogli():
         self.mgl = Moogli()
         #self.test_points_canvas()
         #self.test_lines_canvas()
-        #self.test_cylinders_canvas()
+        self.test_cylinders_canvas()
         #self.test_spheres_canvas()
         #self.test_cell_lines()
-        self.test_cell_cylinders()
+        #self.test_cell_cylinders()
 
     def test_points_canvas(self):
         """If place_points in canvas is correct. 1000 random points are displayed in a unit cube, colored - red"""
@@ -37,18 +37,22 @@ class TestMoogli():
     def test_cylinders_canvas(self):
         """If place_cylinders in canvas is correcnt. 4 cylinders, one on x,y and z, and another between 111 and 222, colored red"""
         self.mgl.canvas.clear_all()
-        self.mgl.canvas.place_cylinder('Xaxis', [0.0, 0.0, 0.0], [1.0, 0.0, 0.0], 1.0, [1.,0.,0.,1.])
-        self.mgl.canvas.place_cylinder('X1axis', [1.0, 0.0, 0.0], [2.0, 0.0, 0.0], 0.5, [0.,1.,0.,1.])
-        self.mgl.canvas.place_cylinder('Zaxis', [0.0, 0.0, 1.0], [0.0, 0.0, 4.0], 1.5, [0.,0.,1.,1.])
-        self.mgl.canvas.place_cylinder('Yaxis', [0.0, 1.0, 0.0], [0.0, 2.0, 0.0], 0.7, [1.,0.,0.,1.])
-        self.mgl.canvas.place_cylinder('freeBird', [1.0, 1.0, 1.0], [2.0, 2.0, 2.0], 1.0, [0.,1.,0.,1.])
+        #self.mgl.canvas.place_cylinder('Xaxis', [0.0, 0.0, 0.0], [1.0, 0.0, 0.0], 1.0, [1.,0.,0.,1.])
+        #self.mgl.canvas.place_cylinder('X1axis', [1.0, 0.0, 0.0], [2.0, 0.0, 0.0], 0.5, [0.,1.,0.,1.])
+        #self.mgl.canvas.place_cylinder('Zaxis', [0.0, 0.0, 1.0], [0.0, 0.0, 4.0], 1.5, [0.,0.,1.,1.])
+        #self.mgl.canvas.place_cylinder('Yaxis', [0.0, 1.0, 0.0], [0.0, 2.0, 0.0], 0.7, [1.,0.,0.,1.])
+        #self.mgl.canvas.place_cylinder('freeBird', [1.0, 1.0, 1.0], [2.0, 2.0, 2.0], 1.0, [0.,1.,0.,1.])
+        self.mgl.canvas.place_cylinders({'Xaxis':[0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0], 'X1axis':[1.0, 0.0, 0.0, 2.0, 0.0, 0.0, 0.5]}, [1.,0.,0.,1.])
+
+        #self.mgl.canvas.place_cylinders({'Xaxis':[0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0]}, [1.,0.,0.,1.])
         self.mgl.show()
         self.assertTrue(self.ask_for_correctness("4 cylinders, 3 on axis and 1 between 111 and 222"))
 
     def test_cell_cylinders(self):
         """if a mitral cell is displayed as lines"""
         self.mgl.canvas.clear_all()
-        fh = FileHandler(os.path.abspath(os.path.join('.','samples','L23PyrFRB.morph.xml')))
+        #fh = FileHandler(os.path.abspath(os.path.join('.','samples','purk2.xml')))
+        fh = FileHandler(os.path.abspath(os.path.join('.','cells_aditya','syn_conn_array_10000_singlesclubbed100_jointsclubbed1_numgloms3_seed844.0_directed0.01_proximal_ONLYCELLS.xml')))
         parsed_vals = fh.get_values()
         del fh
         for cmp_name,cmp_pos in parsed_vals.iteritems():
@@ -69,13 +73,15 @@ class TestMoogli():
     def test_cell_lines(self):
         """if a mitral cell is displayed as lines"""
         self.mgl.canvas.clear_all()
-        fh = FileHandler(os.path.abspath(os.path.join('.','samples','L23PyrFRB.morph.xml')))
+        fh = FileHandler(os.path.abspath(os.path.join('.','samples','purk2.xml')))
+        #fh = FileHandler(os.path.abspath(os.path.join('.','cells_aditya','syn_conn_array_10000_singlesclubbed100_jointsclubbed1_numgloms3_seed844.0_directed0.01_proximal_ONLYCELLS.xml')))
+        #fh = FileHandler(os.path.abspath(os.path.join('.','cells_aditya','mitral.xml')))
         parsed_vals = fh.get_values()
         del fh
         for cmp_name,cmp_pos in parsed_vals.iteritems():
             self.mgl.canvas.place_line(cmp_name,
-                                       [ii*1e4 for ii in cmp_pos[:3]],
-                                       [ii*1e4 for ii in cmp_pos[3:6]],
+                                       [ii*1e3 for ii in cmp_pos[:3]],
+                                       [ii*1e3 for ii in cmp_pos[3:6]],
                                        [1.0, 0.0, 0.0, 1.0])
         self.mgl.show()
 
