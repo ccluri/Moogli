@@ -18,13 +18,17 @@
 
 from OpenGL.GL import *
 from OpenGL.raw.GLUT import *
-from OpenGL.GLUT import *
+#from OpenGL.GLUT import *
 from OpenGL.GLU import *
 from numpy import sqrt,arccos,arctan,absolute,array,float32,random
+from numpy import radians,sin,cos,dot
+from collections import deque
 import OpenGL.arrays.vbo as glvbo
 import numpy as np
+#from itertools import izip,starmap
+#from operator import mul
 
-sphere_30 = np.load('sphere30.npz')
+#sphere_30 = np.load('sphere30.npz')
 
 class BaseObject(object):
 	def __init__(self):
@@ -115,77 +119,71 @@ class Cylinder(BaseObject):
 		self.a = alpha
 		self.start_pos = np.array((start_pos), dtype=np.float32)
 		self.end_pos = np.array((end_pos), dtype=np.float32)
+		#self.start_pos = start_pos
+		#self.end_pos = end_pos
 		self.dia = dia
-		self.data, self.index = self.generate_cylinder()
+		self.data = self.generate_cylinder()
+
+		#self.color = [[None]*4]*22#
 		self.color = np.zeros([22, 4])
-		for ii in range(22):
+		#print self.rgb, self.a, self.rgb.append(self.a)
+		#self.color = np.array((self.rgb.append(self.a)*22), dtype=np.float32)
+		for ii in xrange(22):
 			self.color[ii,:3] = self.rgb
 			self.color[ii, 3] = self.a
+			#self.color[ii][:3] = self.rgb
+			#self.color[ii][3] = self.a
+		#self.color = np.array((self.color),dtype=np.float32)
 
 	def vertex(self, r, angle):
 		'''angle in degrees'''
-		x = r*np.cos(np.radians(angle))
-		y = r*np.sin(np.radians(angle))
+		x = r*cos(radians(angle))
+		y = r*sin(radians(angle))
 		return np.array((x,y))
+
+	def dot(self,U,V):
+		return dot(U,V) #ordered according to effeciency - this may depend on if or not numpy array used.
+		#return (U[0]*V[0])+(U[1]*V[1])+(U[2]*V[2])		
+		#return reduce(lambda sum, p: sum + p[0]*p[1], zip(U,V), 0)#takes too long!
+		#return sum(starmap(mul,izip(U,V)))
 
 	def generate_cylinder(self):
 		r = self.dia / 2.0
 		P1 = self.start_pos
 		P2 = self.end_pos
-		#height = np.linalg.norm(P2 - P1) #dist between points
 		L = P2 - P1 #vector in dir of cylinder
-		N = L / np.linalg.norm(L) #dir of plane normal
+		N = L / sqrt(self.dot(L, L.conj()))
+		#N = L / np.sqrt(self.dot(L, L.conj()))
 		#Eq of plane
 		#L[0](x)+L[1](y)+L[2](z) = L[0]*P1[0]+L[1]*P1[1]+L[2]*P1[2]
 		#A pt on plane above
 		dum_num = [1.00001, 2.80] #np.random.rand(2,1)
 		if L[0] != 0.0: #if the x intersect is non zero.
- 			P = np.array(((np.dot(L,P1) -L[1]*dum_num[0] -L[2]*dum_num[1]) / L[0], dum_num[0], dum_num[1]), dtype=np.float32)
+ 			P = np.array(((self.dot(L,P1) -L[1]*dum_num[0] -L[2]*dum_num[1]) / L[0], dum_num[0], dum_num[1]), dtype=np.float32)
 		elif L[1] != 0.0:
-			P = np.array((dum_num[0], (np.dot(L,P1) -L[0]*dum_num[0] -L[2]*dum_num[1]) / L[1], dum_num[1]), dtype=np.float32)
+			P = np.array((dum_num[0], (self.dot(L,P1) -L[0]*dum_num[0] -L[2]*dum_num[1]) / L[1], dum_num[1]), dtype=np.float32)
 		elif L[2] != 0.0:
-			P = np.array((dum_num[0], dum_num[1], (np.dot(L,P1) -L[0]*dum_num[0] -L[1]*dum_num[1]) / L[2]), dtype=np.float32)
+			P = np.array((dum_num[0], dum_num[1], (self.dot(L,P1) -L[0]*dum_num[0] -L[1]*dum_num[1]) / L[2]), dtype=np.float32)
 		else:
 			print 'Cannot draw a zero length cylinder'
-		U = (P1 - P) / np.linalg.norm(P1 - P) #unit vector in plane
-		V = np.cross(U, N) #second orthonormal vector
-		V = V / np.linalg.norm(V)
-		subdiv = self.subdivisions
-		angle = 360.0 / subdiv
-		# data_array = np.zeros((22, 3), dtype=np.float32)
-		# data_array[0, :] = P1
-		# data_array[1, :] = P2
-		# doh_1 = 2 #dummy variable
-		# for angle_down in np.arange(0.0, 360.0, angle):
-		# 	ang_down = np.radians(angle_down)
-		# 	bot_pt = P1 + r*np.sin(ang_down)*U + r*np.cos(ang_down)*V
-		# 	data_array[doh_1, :] = bot_pt
-		# 	data_array[doh_1+1, :]= bot_pt + L
-		# 	doh_1 += 2
-		# indx = np.zeros(120, dtype=np.uint32)
-		# for ii in range(2, 22, 2):
-		# 	if ii != 20:
-		# 		indx[12*((ii-2)/2): 12*(1+(ii-2)/2)] = ii, ii+1, ii+2, ii+1, ii+2, ii+3, ii, 0, ii+2, ii+1, 1, ii+3	
-		# 	else:
-		# 		indx[12*((ii-2)/2): 12*(1+(ii-2)/2)] = ii, ii+1, 2, ii+1, 2, 3, ii, 0, 2, ii+1, 1, 3	
-		# return data_array, indx
-		data_array = []#np.zeros((22, 3), dtype=np.float32)
+		P1P = P1 - P
+		U = P1P / sqrt(self.dot(P1P, P1P.conj()))
+		V = np.array(((U[1]*N[2])-(N[1]*U[2]),(U[2]*N[0])-(N[2]*U[0]),(U[0]*N[1])-(N[0]*U[1])),dtype=np.float32)
+		V = V / sqrt(self.dot(V, V.conj()))
+		subdiv = 10 # self.subdivisions
+		angle = 36.0 #360.0 / subdiv
+		#data_array = [] #
+		data_array = deque() #more effecient that lists
 		data_array.append(P1)
 		data_array.append(P2)
-		for angle_down in np.arange(0.0, 360.0, angle):
-			ang_down = np.radians(angle_down)
-			bot_pt = P1 + r*np.sin(ang_down)*U + r*np.cos(ang_down)*V
+		for angle_down in xrange(0, 360, 36):
+		#for angle_down in np.arange(0.0, 360.0, angle):
+			ang_down = radians(angle_down)
+			bot_pt = P1 + r*sin(ang_down)*U + r*cos(ang_down)*V #numpy array!
 			data_array.append(bot_pt)
 			data_array.append(bot_pt + L)
 		data_array_np = np.array((data_array), dtype=np.float32)
-		indx = []#np.zeros(120, dtype=np.uint32)
-		for ii in range(2, 22, 2):
-			if ii != 20:
-				indx.extend([ii, ii+1, ii+2, ii+1, ii+2, ii+3, ii, 0, ii+2, ii+1, 1, ii+3])
-			else:
-				indx.extend([ii, ii+1, 2, ii+1, 2, 3, ii, 0, 2, ii+1, 1, 3])
-		indx_np = np.array((indx), dtype=np.uint32)
-		return data_array_np, indx_np
+		return data_array_np
 
 class Sphere(BaseObject):
 	"""

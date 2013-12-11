@@ -47,6 +47,9 @@ class GLCanvas(QGLViewer):
         self.light2 = ManipulatedFrame()
         self.show_lights = False#True
 
+        self.cylinder_index = np.array((2, 3, 4, 3, 4, 5, 2, 0, 4, 3, 1, 5, 4, 5, 6, 5, 6, 7, 4, 0, 6, 5, 1, 7, 6, 7, 8, 7, 8, 9, 6, 0, 8, 7, 1, 9, 8, 9, 10, 9, 10, 11, 8, 0, 10, 9, 1, 11, 10, 11, 12, 11, 12, 13, 10, 0, 12, 11, 1, 13, 12, 13, 14, 13, 14, 15, 12, 0, 14, 13, 1, 15, 14, 15, 16, 15, 16, 17, 14, 0, 16, 15, 1, 17, 16, 17, 18, 17, 18, 19, 16, 0, 18, 17, 1, 19, 18, 19, 20, 19, 20, 21, 18, 0, 20, 19, 1, 21, 20, 21, 2, 21, 2, 3, 20, 0, 2, 21, 1, 3), dtype=np.uint32)
+
+
     def init(self):
         #glDisable(GL_LIGHTING)
         self.setBackgroundColor(QtGui.QColor(204, 204, 204, 255))
@@ -79,9 +82,8 @@ class GLCanvas(QGLViewer):
             self.triangles_color = np.array(objt.color, dtype=np.float32)
             self.spheres_names = [objt.name]
 
-    def place_cylinders(self, point_pos_dict, color):
-        #print len(self.triangles_data), len(self.triangles_index), len(self.triangles_color), self.triangles_count
-        #22,120,22,120
+    def place_cylinders(self, point_pos_dict, color): #removes all existing cylinders ! - correct this!
+
         num_cylinders = len(point_pos_dict)
         self.triangles_data = np.zeros((22*num_cylinders, 3), dtype=np.float32)
         self.triangles_index = np.zeros(120*num_cylinders, dtype=np.uint32)
@@ -96,9 +98,17 @@ class GLCanvas(QGLViewer):
                             dia=point_pos[6]*factor,
                             rgb=np.array((color[0],color[1],color[2]),dtype=np.float32),
                             alpha=np.array((color[3]),dtype=np.float32))
-        
+                            #rgb=color[:3],
+                            #alpha=color[3])
+            # objt = Cylinder(ii,
+            #                 start_pos=[tt*factor for tt in point_pos[:3]],
+            #                 end_pos=[tt*factor for tt in point_pos[3:6]],
+            #                 dia=point_pos[6]*factor,
+            #                 rgb=color[:3],
+            #                 alpha=color[3])
+
             self.triangles_data[doh_2*22:(doh_2+1)*22,:] = objt.data
-            self.triangles_index[doh_2*120: (doh_2+1)*120] = objt.index + (doh_2*22)
+            self.triangles_index[doh_2*120: (doh_2+1)*120] = self.cylinder_index + (doh_2*22)
             self.triangles_color[doh_2*22: (doh_2+1)*22,:] = objt.color
             self.cylinders_names.append(objt.name)
             self.objt_dict[objt.name] = objt
@@ -122,7 +132,7 @@ class GLCanvas(QGLViewer):
             pass
         try:
             self.triangles_data = np.vstack((self.triangles_data, np.float32(objt.data)))
-            self.triangles_index = np.hstack((self.triangles_index, objt.index + existing_count))
+            self.triangles_index = np.hstack((self.triangles_index, self.cylinder_index + existing_count))
             self.triangles_color = np.vstack((self.triangles_color, np.float32(objt.color)))
             self.cylinders_names.append(objt.name)
         except AttributeError:
