@@ -49,7 +49,6 @@ class GLCanvas(QGLViewer):
 
         self.cylinder_index = np.array((2, 3, 4, 3, 4, 5, 2, 0, 4, 3, 1, 5, 4, 5, 6, 5, 6, 7, 4, 0, 6, 5, 1, 7, 6, 7, 8, 7, 8, 9, 6, 0, 8, 7, 1, 9, 8, 9, 10, 9, 10, 11, 8, 0, 10, 9, 1, 11, 10, 11, 12, 11, 12, 13, 10, 0, 12, 11, 1, 13, 12, 13, 14, 13, 14, 15, 12, 0, 14, 13, 1, 15, 14, 15, 16, 15, 16, 17, 14, 0, 16, 15, 1, 17, 16, 17, 18, 17, 18, 19, 16, 0, 18, 17, 1, 19, 18, 19, 20, 19, 20, 21, 18, 0, 20, 19, 1, 21, 20, 21, 2, 21, 2, 3, 20, 0, 2, 21, 1, 3), dtype=np.uint32)
 
-
     def init(self):
         #glDisable(GL_LIGHTING)
         self.setBackgroundColor(QtGui.QColor(204, 204, 204, 255))
@@ -58,6 +57,146 @@ class GLCanvas(QGLViewer):
         self.setAnimationPeriod(100)
         self.light_defaults()
         self.restoreStateFromFile()
+
+    def place_point(self, name, start_pos, color):
+        objt = Point(name, 
+                     position=np.array((start_pos), dtype=np.float32),
+                     rgb=np.array((color[:3]), dtype=np.float32),
+                     alpha=np.array((color[3]), dtype=np.float32))
+        if not self.objt_dict.has_key(objt.name):
+            self.objt_dict[objt.name] = objt
+        else:
+            print 'Point with name: ',objt.name,' already exists - use unique name'
+            return
+        try:
+            self.points_data = np.vstack((self.points_data, objt.data))
+            self.points_color = np.vstack((self.points_color, objt.color))
+            self.points_names.append(objt.name)
+        except AttributeError:
+            self.points_data = np.array((objt.data))
+            self.points_color = np.array((objt.color))
+            self.points_names = [objt.name]
+
+    def place_points(self, point_pos_dict, color, factor=1e1):
+        num_points = len(point_pos_dict)
+        points_data = np.zeros((num_points, 3), dtype=np.float32)
+        points_color = np.zeros((num_points, 4), dtype=np.float32)
+        counter_a = 0
+        for ii, point_pos in point_pos_dict.iteritems():
+            objt = Point(ii,
+                         position=np.array((point_pos[:3]), dtype=np.float32)*factor,
+                         rgb=np.array((color[:3]), dtype=np.float32),
+                         alpha=np.array((color[3]), dtype=np.float32))
+            points_data[counter_a, :] = objt.data
+            points_color[counter_a, :] = objt.color
+            self.points_names.append(objt.name)
+            self.objt_dict[objt.name] = objt
+            counter_a += 1
+        try:
+            self.points_data = np.vstack((self.points_data, points_data))
+            self.points_color = np.vstack((self.points_color, points_color))
+        except AttributeError:
+            self.points_data = points_data
+            self.points_color = points_color
+
+    def place_line(self, name, start_pos, end_pos, color):
+        objt = Line(name,
+                    start_pos=np.array((start_pos), dtype=np.float32),
+                    end_pos=np.array((end_pos), dtype=np.float32),
+                    rgb=np.array((color[:3]), dtype=np.float32),
+                    alpha=np.array((color[3]), dtype=np.float32))
+        if not self.objt_dict.has_key(objt.name):
+            self.objt_dict[objt.name] = objt
+        else:
+            print 'Line with name: ',objt.name,' already exists - use unique name'
+            return
+        try:
+            self.lines_data = np.vstack((self.lines_data, objt.data))
+            self.lines_color = np.vstack((self.lines_color, objt.color))
+            self.lines_names.append(objt.name)
+        except AttributeError:
+            self.lines_data = np.array((objt.data))
+            self.lines_color = np.array((objt.color))
+            self.lines_names = [objt.name]
+
+    def place_lines(self, point_pos_dict, color, factor=1.0):
+        num_lines = len(point_pos_dict)
+        lines_data = np.zeros((2*num_lines, 3), dtype=np.float32)
+        lines_color = np.zeros((2*num_lines, 4), dtype=np.float32)
+        counter_a = 0 #index to keep count
+        for ii, point_pos in point_pos_dict.iteritems():
+            objt = Line(ii,
+                        start_pos=np.array((point_pos[:3]), dtype=np.float32)*factor,
+                        end_pos=np.array((point_pos[3:6]), dtype=np.float32)*factor,
+                        rgb=np.array((color[:3]), dtype=np.float32),
+                        alpha=np.array((color[3]), dtype=np.float32))
+            lines_data[counter_a*2:(counter_a+1)*2,:] = objt.data
+            lines_color[counter_a*2:(counter_a+1)*2,:] = objt.color
+            self.lines_names.append(objt.name)
+            self.objt_dict[objt.name] = objt
+            counter_a += 1
+        try:
+            self.lines_data = np.vstack((self.lines_data, lines_data))
+            self.lines_color = np.vstack((self.lines_color, lines_color))
+        except AttributeError:
+            self.lines_data = lines_data
+            self.lines_color = lines_color
+
+    def place_cylinder(self, name, start_pos, end_pos, dia, color):
+        objt = Cylinder(name,
+                        start_pos=np.array((start_pos),dtype=np.float32), 
+                        end_pos=np.array((end_pos), dtype=np.float32), 
+                        dia=dia,
+                        rgb=np.array((color[:3]), dtype=np.float32),
+                        alpha=np.array((color[3]), dtype=np.float32))
+        if not self.objt_dict.has_key(objt.name):
+            self.objt_dict[objt.name] = objt
+        else:
+            print 'Cylinder with name: ',objt.name,' already exists - use unique name'
+            return
+        try:
+            existing_count = np.uint32(len(self.triangles_data))
+        except AttributeError:
+            pass
+        try:
+            self.triangles_data = np.vstack((self.triangles_data, np.float32(objt.data)))
+            self.triangles_index = np.hstack((self.triangles_index, self.cylinder_index + existing_count))
+            self.triangles_color = np.vstack((self.triangles_color, np.float32(objt.color)))
+            self.cylinders_names.append(objt.name)
+        except AttributeError:
+            self.triangles_data = np.array(objt.data, dtype=np.float32)
+            self.triangles_index = np.array(self.cylinder_index, dtype=np.uint32)
+            self.triangles_color = np.array(objt.color, dtype=np.float32)
+            self.cylinders_names = [objt.name]
+
+    def place_cylinders(self, point_pos_dict, color, factor=1.0):
+        num_cylinders = len(point_pos_dict)
+        triangles_data = np.zeros((22*num_cylinders, 3), dtype=np.float32)
+        triangles_index = np.zeros(120*num_cylinders, dtype=np.uint32)
+        triangles_color = np.zeros((22*num_cylinders, 4), dtype=np.float32)
+        counter_a = 0 #index to keep count of number of cylinders drawn
+        for ii, point_pos in point_pos_dict.iteritems():
+            objt = Cylinder(ii,
+                            start_pos=np.array((point_pos[:3]), dtype=np.float32)*factor,
+                            end_pos=np.array((point_pos[3:6]),dtype=np.float32)*factor,
+                            dia=point_pos[6]*factor,
+                            rgb=np.array((color[0],color[1],color[2]),dtype=np.float32),
+                            alpha=np.array((color[3]),dtype=np.float32))
+
+            triangles_data[counter_a*22:(counter_a+1)*22,:] = objt.data
+            triangles_index[counter_a*120: (counter_a+1)*120] = self.cylinder_index + (counter_a*22)
+            triangles_color[counter_a*22: (counter_a+1)*22,:] = objt.color
+            self.cylinders_names.append(objt.name)
+            self.objt_dict[objt.name] = objt
+            counter_a += 1
+        try:
+            self.triangles_data = np.vstack((self.triangles_data, triangles_data))
+            self.triangles_index = np.hstack((self.triangles_index, triangles_index))
+            self.triangles_color = np.vstack((self.triangles_color, triangles_color))
+        except AttributeError:
+            self.triangles_data = triangles_data
+            self.triangles_index = triangles_index
+            self.triangles_color = triangles_color
 
     def place_sphere(self, name, start_pos, dia):
         objt = Sphere(name, centre_pos=np.array((start_pos), dtype=np.float32),
@@ -81,101 +220,6 @@ class GLCanvas(QGLViewer):
             self.triangles_index = np.array(objt.index, dtype=np.uint32)
             self.triangles_color = np.array(objt.color, dtype=np.float32)
             self.spheres_names = [objt.name]
-
-    def place_cylinders(self, point_pos_dict, color): #removes all existing cylinders ! - correct this!
-
-        num_cylinders = len(point_pos_dict)
-        self.triangles_data = np.zeros((22*num_cylinders, 3), dtype=np.float32)
-        self.triangles_index = np.zeros(120*num_cylinders, dtype=np.uint32)
-        self.triangles_color = np.zeros((22*num_cylinders, 4), dtype=np.float32)
-
-        doh_2 = 0 #index to keep count of number of cylinders drawn
-        factor = 1e3
-        for ii, point_pos in point_pos_dict.iteritems():
-            objt = Cylinder(ii,
-                            start_pos=np.array((point_pos[:3]), dtype=np.float32)*factor,
-                            end_pos=np.array((point_pos[3:6]),dtype=np.float32)*factor,
-                            dia=point_pos[6]*factor,
-                            rgb=np.array((color[0],color[1],color[2]),dtype=np.float32),
-                            alpha=np.array((color[3]),dtype=np.float32))
-                            #rgb=color[:3],
-                            #alpha=color[3])
-            # objt = Cylinder(ii,
-            #                 start_pos=[tt*factor for tt in point_pos[:3]],
-            #                 end_pos=[tt*factor for tt in point_pos[3:6]],
-            #                 dia=point_pos[6]*factor,
-            #                 rgb=color[:3],
-            #                 alpha=color[3])
-
-            self.triangles_data[doh_2*22:(doh_2+1)*22,:] = objt.data
-            self.triangles_index[doh_2*120: (doh_2+1)*120] = self.cylinder_index + (doh_2*22)
-            self.triangles_color[doh_2*22: (doh_2+1)*22,:] = objt.color
-            self.cylinders_names.append(objt.name)
-            self.objt_dict[objt.name] = objt
-            doh_2 += 1
-
-    def place_cylinder(self, name, start_pos, end_pos, dia, color):
-        objt = Cylinder(name,
-                        start_pos=np.array((start_pos),dtype=np.float32), 
-                        end_pos=np.array((end_pos), dtype=np.float32), 
-                        dia=dia,
-                        rgb=np.array((color[0],color[1],color[2]), dtype=np.float32),
-                        alpha=np.array((color[3]), dtype=np.float32))
-        if not self.objt_dict.has_key(objt.name):
-            self.objt_dict[objt.name] = objt
-        else:
-            print 'Cylinder with name: ',objt.name,' already exists - use unique name'
-            return
-        try:
-            existing_count = np.uint32(len(self.triangles_data))
-        except AttributeError:
-            pass
-        try:
-            self.triangles_data = np.vstack((self.triangles_data, np.float32(objt.data)))
-            self.triangles_index = np.hstack((self.triangles_index, self.cylinder_index + existing_count))
-            self.triangles_color = np.vstack((self.triangles_color, np.float32(objt.color)))
-            self.cylinders_names.append(objt.name)
-        except AttributeError:
-            self.triangles_data = np.array(objt.data, dtype=np.float32)
-            self.triangles_index = np.array(objt.index, dtype=np.uint32)
-            self.triangles_color = np.array(objt.color, dtype=np.float32)
-            self.cylinders_names = [objt.name]
-        
-    def place_line(self, name, start_pos, end_pos, color):
-        objt = Line(name,
-                    start_pos=np.array((start_pos), dtype=np.float32),
-                    end_pos=np.array((end_pos), dtype=np.float32),
-                    rgb=np.array((color[0], color[1], color[2]), dtype=np.float32),
-                    alpha=np.array((color[3]), dtype=np.float32))
-        if not self.objt_dict.has_key(objt.name):
-            self.objt_dict[objt.name] = objt
-        else:
-            print 'Point with name: ',objt.name,' already exists - use unique name'
-            return
-        try:
-            self.lines_data = np.vstack((self.lines_data, objt.data))
-            self.lines_color = np.vstack((self.lines_color, objt.color))
-            self.lines_names.append(objt.name)
-        except AttributeError:
-            self.lines_data = np.array((objt.data))
-            self.lines_color = np.array((objt.color))
-            self.lines_names = [objt.name]
-
-    def place_point(self, name, start_pos):
-        objt = Point(name, position=np.array((start_pos), dtype=np.float32))
-        if not self.objt_dict.has_key(objt.name):
-            self.objt_dict[objt.name] = objt
-        else:
-            print 'Point with name: ',objt.name,' already exists - use unique name'
-            return
-        try:
-            self.points_data = np.vstack((self.points_data, objt.data))
-            self.points_color = np.vstack((self.points_color, objt.color))
-            self.points_names.append(objt.name)
-        except AttributeError:
-            self.points_data = np.array((objt.data))
-            self.points_color = np.array((objt.color))
-            self.points_names = [objt.name]
 
     def create_object_buffers(self):
         if self.points_names:

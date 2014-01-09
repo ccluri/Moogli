@@ -8,10 +8,14 @@ import pickle
 class show_points():
     def __init__(self, parent=None):
         self.mgl = Moogli()
+        self.draw_line()
+        #self.draw_slice()
         #self.draw_lines()
         #self.draw_points()
-        #self.draw_slice()
-        self.draw_cylinders()
+        #self.draw_point()
+
+        #self.draw_cylinders()        
+        #self.draw_cylinder()
         self.mgl.show()
 
     def draw_slice(self):
@@ -36,60 +40,71 @@ class show_points():
 
         self.mgl.canvas.place_line('line_cs',[1.5,4.0,15.0],[1.5,4.0,-15.0],[0,1,0,1])
 
-    def draw_lines(self):
-        f = open('olfactory_dict.pkl','r')
-        #f = open('point_pos_dict.pkl','r')
+    def draw_line(self):
+        #f = open('olfactory_dict.pkl','r')
+        #factor = 1e3
+        f = open('point_pos_dict.pkl','r')
+        factor = 1e-2
         pp = pickle.load(f)
         f.close()
-        self.mgl.canvas.clear_all()
         tic = time.clock()
         for ii, point_pos in pp.iteritems():
-            #print point_pos[:3], point_pos[3:6]
-            # if ii.find('2') == 0 or ii.find('3') == 0 or ii.find('4') == 0 or ii.find('9') == 0 or ii.find('10') == 0 or ii.find('11') == 0:
-            #     self.mgl.canvas.place_line(str(ii),[1e-2*kk for kk in point_pos[:3]],[1e-2*kk for kk in point_pos[3:6]],[1.,0.,0.,1.0]) 
-            # else:
-            #     self.mgl.canvas.place_line(str(ii),[1e-2*kk for kk in point_pos[:3]],[1e-2*kk for kk in point_pos[3:6]],[0.,0.,1.,0.3]) 
-            #self.mgl.canvas.place_line(str(ii), [1e-3*kk for kk in point_pos[:3]],[kk*1e-3 for kk in point_pos[3:6]],[1.,0.,0.,1.0]) 
-            self.mgl.canvas.place_line(str(ii), [1e2*kk for kk in point_pos[:3]],[kk*1e2 for kk in point_pos[3:6]],[1.,0.,0.,1.0]) 
+            self.mgl.canvas.place_line(str(ii), [kk*factor for kk in point_pos[:3]],[kk*factor for kk in point_pos[3:6]],[1.,0.,0.,1.0]) 
         toc = time.clock() - tic
         print toc
+
+    def draw_lines(self):
+        #f = open('olfactory_dict.pkl','r')
+        #factor = 1e3
+        f = open('point_pos_dict.pkl','r')
+        factor = 1e-2
+        pp = pickle.load(f)
+        f.close()
+        tic = time.clock()
+        self.mgl.canvas.place_lines(pp, [1.,0.,0.,1.])
+        toc = time.clock() - tic
+        print toc
+
+    def draw_cylinder(self):
+        self.mgl.canvas.place_cylinder('freeBird', [1.0, 1.0, 1.0], [2.0, 2.0, 2.0], 1.0, [0.,1.,0.,1.])
 
     def draw_cylinders(self):
         #f = open('point_pos_dict.pkl','r')
+        #factor = 1e-2
         f = open('olfactory_dict.pkl','r')
+        factor = 1e3
         pp = pickle.load(f)
         f.close()
-        #self.mgl.canvas.initialize_numpy(len(pp), 'cylinders')
-        self.mgl.canvas.clear_all()
         tic = time.clock()
         self.mgl.canvas.place_cylinders(pp, [1.,0.,0.,1.])
-        #for ii, point_pos in pp.iteritems():
-        #    self.mgl.canvas.place_cylinder(str(ii), [1e3*kk for kk in point_pos[:3]],[1e3*kk for kk in point_pos[3:6]],point_pos[6]*1e3,[1.,0.,0.,1.0])
         toc = time.clock() - tic
         print toc
-            
         
     def draw_points(self):
         f = open('point_pos_dict.pkl','r')
+        factor = 1e-2
+        #f = open('olfactory_dict.pkl','r')
+        #factor = 1e3
         pp = pickle.load(f)
         f.close()
-        self.mgl.canvas.clear_all()
-        count = 0
+        tic = time.clock()
+        self.mgl.canvas.place_points(pp, [1,0,0,1], factor)
+        toc = time.clock() - tic
+        print toc
+
+    def draw_point(self):
+        f = open('point_pos_dict.pkl','r')
+        factor = 1e-2
+        #f = open('olfactory_dict.pkl','r')
+        #factor = 1e3
+        pp = pickle.load(f)
+        f.close()
+        tic = time.clock()
         for ii, point_pos in pp.iteritems():
-            self.mgl.canvas.place_point(str(ii), [1e-2*kk for kk in point_pos]) 
-            #if ii.find('2_') == 0 or ii.find('0_') == 0 or ii.find('1_') == 0 or ii.find('3_') == 0 or ii.find('4_') == 0:
-            #if ii.find('5_') == 0:
-            #if ii.find('6_') == 0 or ii.find('7_') == 0:
-            #if ii.find('proby1_nodes == 0:
-            #if ii.find('9_') == 0 or ii.find('10_') == 0 or ii.find('11_') == 0:
+            self.mgl.canvas.place_point(str(ii), [factor*kk for kk in point_pos[:3]],[1.,0.,0.,1.0])        
+        toc = time.clock() - tic
+        print toc
 
-            # if int(ii.split('/')[1]) <= 1000:
-            #     if int(ii.split('/')[2]) == 1:
-            #         count += 1
-            #         self.mgl.canvas.place_point(str(ii), [1e-2*kk for kk in point_pos]) 
-            #         print point_pos
-
-        print count
 
 if __name__ == '__main__':
    show_points()

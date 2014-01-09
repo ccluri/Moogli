@@ -76,12 +76,14 @@ class Point(BaseObject):
 	"""
 	Class that defines a point
 	"""
-	def __init__(self, name, position):
+	def __init__(self, name, position, rgb, alpha):
 		"""
 		Point constructor
 		"""
 		super(Point, self).__init__()
 		self.name = name
+		self.rgb = rgb
+		self.a = alpha
 		self.drawn_as = 'Point'
 		self.data = np.array(position, dtype=np.float32)
 		self.color = np.hstack((self.rgb, self.a))
@@ -101,8 +103,9 @@ class Line(BaseObject):
 		self.data = np.array((start_pos, end_pos), dtype=np.float32)
 		self.rgb = rgb
 		self.a = alpha
-		self.color = np.hstack((self.rgb, self.a))
-		self.color = np.vstack((self.color, self.color))
+		self.color = np.zeros([2, 4], dtype=np.float32)
+		self.color[:, :3] = self.rgb
+		self.color[:, 3] = self.a
 
 class Cylinder(BaseObject):
 	"""
@@ -119,21 +122,11 @@ class Cylinder(BaseObject):
 		self.a = alpha
 		self.start_pos = np.array((start_pos), dtype=np.float32)
 		self.end_pos = np.array((end_pos), dtype=np.float32)
-		#self.start_pos = start_pos
-		#self.end_pos = end_pos
 		self.dia = dia
 		self.data = self.generate_cylinder()
-
-		#self.color = [[None]*4]*22#
 		self.color = np.zeros([22, 4])
-		#print self.rgb, self.a, self.rgb.append(self.a)
-		#self.color = np.array((self.rgb.append(self.a)*22), dtype=np.float32)
-		for ii in xrange(22):
-			self.color[ii,:3] = self.rgb
-			self.color[ii, 3] = self.a
-			#self.color[ii][:3] = self.rgb
-			#self.color[ii][3] = self.a
-		#self.color = np.array((self.color),dtype=np.float32)
+		self.color[:, :3] = self.rgb
+		self.color[:, 3] = self.a
 
 	def vertex(self, r, angle):
 		'''angle in degrees'''
